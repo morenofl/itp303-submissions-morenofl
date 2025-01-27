@@ -116,23 +116,29 @@
         const products = document.querySelectorAll(".product-card");
         console.log(products);
 
-        // Detect that user clicked a product
+        // 1. Detect that user clicked a product
+        // 2. Get the price of the product that was clicked
+        // 3. Get the current subtotal
+        // 4. Add the product's price to the current subtotal
+        // 5. Display the new subtotal
+
+        // 1. Detect that user clicked a product
         for(let i = 0; i < products.length; i++) {
             products[i].onclick = function() {
-                //get the price of the product that was clicked
+                // 2. Get the price of the product that was clicked
                 const priceText = products[i].querySelector(".product-price").innerText;
                 const price = parseInt(priceText.replace('$',''));
                 console.log(price);
                 
-                //get the current subtotal
+                 // 3. Get the current subtotal
                 const totalText = document.querySelector("#total p").textContent;
                 const total = parseInt(totalText.replace("Cart Subtotal: $", ""));
                 console.log(total);
 
-                //add the price to the current subtotal
+                // 4. Add the product's price to the current subtotal
                 const newTotal = total + price;
                 const newTotalText = "Cart Subtotal: $" + newTotal;
-                //display the new subtotal
+                // 5. Display the new subtotal
                 document.querySelector("#total p").textContent = newTotalText;
             }
         }

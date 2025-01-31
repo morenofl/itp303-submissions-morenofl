@@ -1,0 +1,15 @@
+#grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    width: 100%;
+    height: auto;
+    padding: 50px;
+    font-family: 'Open Sans', sans-serif;
+    
+}
+
+h2 {
+    padding-left: 3%;
+}
+

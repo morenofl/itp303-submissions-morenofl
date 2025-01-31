@@ -1,0 +1,23 @@
+.card {
+    cursor: pointer;
+    padding-top: 25px;
+    width: 85%;
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+}
+
+.card .list-group {
+    border-bottom: none;
+}
+
+.card .list-group-item {
+    border: none;
+}
+
+.product-image {
+
+    height:400px;
+    width: 100%;
+
+}

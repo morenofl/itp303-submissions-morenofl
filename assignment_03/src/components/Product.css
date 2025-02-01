@@ -1,10 +1,12 @@
 .card {
     cursor: pointer;
     padding-top: 25px;
-    width: 85%;
+    width: 23vw;
+    
     text-align: center;
-    margin: 10px;
+    margin: 5px;
     padding: 10px;
+
 }
 
 .card .list-group {
@@ -13,11 +15,12 @@
 
 .card .list-group-item {
     border: none;
+    
 }
 
 .product-image {
-
-    height:400px;
-    width: 100%;
+    object-fit: contain;
+    height: 15vw;
+    width: 20vw;
 
 }

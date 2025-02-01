@@ -1,6 +1,7 @@
 #grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-rows: auto;
     gap: 5px;
     width: 100%;
     height: auto;
@@ -11,5 +12,20 @@
 
 h2 {
     padding-left: 3%;
+}
+
+@media (max-width: 630px) {
+    #grid-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        gap: 5px;
+        width: 100%;
+        height: auto;
+        padding: 5px;
+        font-family: 'Open Sans', sans-serif;
+        margin-bottom: 10vw;
+        justify-items: center;
+    }
 }
 

@@ -6,7 +6,8 @@
     text-align: center;
     margin: 5px;
     padding: 10px;
-
+    object-fit: contain;
+    
 }
 
 .card .list-group {
@@ -24,3 +25,15 @@
     width: 20vw;
 
 }
+
+@media (max-width: 630px) {
+    .card {
+        height: 58vw; 
+        width: 60vw;   
+    }
+}
+
+
+
+
+

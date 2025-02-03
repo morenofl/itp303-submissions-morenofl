@@ -3,7 +3,7 @@ import "./Product.css"
 export default function Product(props) {
     return (
 
-        <div class="card">
+        <div class="card h-100 d-flex flex-column">
 
             <img class="product-image mx-auto card-img-top" src={props.productImage} alt={props.productName} />
             <div class="card-body">

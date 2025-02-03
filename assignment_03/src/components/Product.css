@@ -1,14 +1,33 @@
 .card {
     cursor: pointer;
-    padding-top: 25px;
-    width: 23vw;
+    width: 100%; 
     
     text-align: center;
     margin: 5px;
     padding: 10px;
-    object-fit: contain;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
     
 }
+
+
+.card:hover {
+    transform: scale(1.05); /* Slightly enlarges the card */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Adds shadow */
+}
+
+
+.product-image {
+    height: 200px; 
+    width: 100%; 
+    object-fit: contain; 
+    padding: 10px; 
+    background-color: white; 
+}
+
+
 
 .card .list-group {
     border-bottom: none;
@@ -16,24 +35,12 @@
 
 .card .list-group-item {
     border: none;
-    
 }
 
-.product-image {
-    object-fit: contain;
-    height: 15vw;
-    width: 20vw;
-
+.card-footer {
+    background: none; 
+    border-top: none;
+    padding: 10px;
 }
-
-@media (max-width: 630px) {
-    .card {
-        height: 58vw; 
-        width: 60vw;   
-    }
-}
-
-
-
 
 

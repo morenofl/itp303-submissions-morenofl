@@ -1,0 +1,50 @@
+.card {
+    cursor: pointer;
+    width: 100%; 
+    
+    text-align: center;
+    margin: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    
+}
+
+
+.card:hover {
+    transform: scale(1.05); 
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
+}
+
+
+.product-image {
+    height: 200px; 
+    width: 100%; 
+    object-fit: contain; 
+    padding: 10px; 
+    background-color: white; 
+}
+
+
+
+.card .list-group {
+    border-bottom: none;
+}
+
+.card .list-group-item {
+    border: none;
+}
+
+.card-footer {
+    background: none; 
+    border-top: none;
+    padding: 10px;
+}
+
+.cartButton {
+    margin-left: 3%;
+    margin-right: 3%;
+}
+

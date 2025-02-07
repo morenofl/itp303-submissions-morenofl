@@ -1,0 +1,17 @@
+#productForm {
+    margin-bottom: 20%;
+    
+    align-items: center;
+    width: 50%
+}
+
+h3 {
+    margin-top: 10%;
+    width: 50%;
+    text-align: center;
+    margin-bottom: 2%;
+}
+
+#addButton {
+    width: 20%;
+}

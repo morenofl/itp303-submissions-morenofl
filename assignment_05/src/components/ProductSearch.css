@@ -1,0 +1,9 @@
+#productSearch {
+	margin-bottom: 5%;
+}
+
+#noResultsMessage {
+	margin: 5%;
+	text-align: center;
+	color: red;
+}

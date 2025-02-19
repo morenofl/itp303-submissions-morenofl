@@ -111,7 +111,7 @@ export default function FeaturedProducts() {
 
 
 
-            <ProductAdd onProductAdd={handleProductAdd}/>
+            {/* <ProductAdd onProductAdd={handleProductAdd}/> */}
 
 
         </div>

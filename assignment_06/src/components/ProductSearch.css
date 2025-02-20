@@ -1,0 +1,28 @@
+#productSearch {
+	margin: 5%;
+	margin-left: 10%;
+	
+}
+
+#searchTitle {
+	margin-left: 10%;
+}
+#noResultsMessage {
+	margin: 5%;
+	text-align: center;
+	color: red;
+}
+#searchForm {
+	
+	width: 70%; /* Adjust size */
+  	display: block; /* Ensures centering works */
+  	margin: 0 auto; /* Centers the input */
+	margin-top: 5%;
+}
+#searchButton {
+	padding: 4px 8px; 
+  	
+	align-items: center;
+	display: flex;
+	justify-content: center;
+}

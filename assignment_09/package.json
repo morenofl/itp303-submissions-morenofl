@@ -1,0 +1,17 @@
+{
+  "name": "assignment_09",
+  "version": "1.0.0",
+  "description": "ITP303 - Assignment 9",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  }
+}

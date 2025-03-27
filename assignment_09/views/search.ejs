@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Search</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<h1 class="col-12 mt-4">Search Page</h1>
+		</div> <!-- .row -->
+	</div> <!-- .container -->
+
+	<div class="container">
+
+		<div class="row mt-3">
+			<div class="col-3 text-right">Username:</div>
+			<div class="col-9">
+				<!-- Display Form Data Here -->
+				
+					
+					<% if(formData.username=='' ) { %>
+						Not Provided
+					<% } else { %>
+						<%= formData.username %>
+					<% } %>
+				
+
+
+			</div>
+		</div> <!-- .row -->
+
+		<div class="row mt-4 mb-4">
+			<a href="/" role="button" class="btn btn-primary">Back to Form</a>
+		</div> <!-- .row -->
+
+	</div> <!-- .container -->
+	<script>
+
+		const username = document.querySelector('.col-9').textContent.trim();
+		
+		if (username == "Not Provided") {
+
+			document.querySelector('.col-9').style.color = "red";
+		}
+	</script>
+</body>
+
+</html>

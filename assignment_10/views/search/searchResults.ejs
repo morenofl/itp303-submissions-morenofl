@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>DVD Search Results</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/">Home</a></li>
+		<li class="breadcrumb-item"><a href="/searchForm">Search</a></li>
+		<li class="breadcrumb-item active">Results</li>
+	</ol>
+	<div class="container">
+		<div class="row">
+			<h1 class="col-12 mt-4">DVD Search Results</h1>
+		</div> <!-- .row -->
+	</div> <!-- .container -->
+	<div class="container">
+		<div class="row mb-4">
+			<div class="col-12 mt-4">
+				<a href="/searchForm" role="button" class="btn btn-primary">Back to Form</a>
+			</div> <!-- .col -->
+		</div> <!-- .row -->
+		<div class="row">
+			<div class="col-12">
+
+				Showing <%=results.length%> result(s).
+
+			</div> <!-- .col -->
+			<div class="col-12">
+				<table class="table table-hover table-responsive mt-4">
+					<thead>
+						<tr>
+							<th></th>
+							<th></th>
+							<th>DVD Title</th>
+							<th>Genre</th>
+							<th>Rating</th>
+							<th>Award</th>
+							<th>Release Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% results.forEach((row) => { %>
+							<tr>
+								<td>
+									<a 
+										href="/editForm/<%= row.dvd_title_id %>"
+										class="btn btn-outline-warning"
+									>
+										Edit
+									</a>
+								</td>
+								<td>
+									<a 
+										href="/delete/<%= row.dvd_title_id%>/<%= row.title %>"
+										class="btn btn-outline-danger"
+										onclick="return confirm('Are you sure you want to delete this track?')"
+									>
+										Delete
+									</a>
+								</td>
+								
+								<td>
+									<a 
+										href="/dvd/<%= row.dvd_title_id %>"
+										
+									>
+										<%= row.title %>
+									</a>
+								</td>
+								<td><%= row.genre %></td>
+								<td><%= row.rating %></td>
+								<td><%= row.award %></td>
+								<td><%= row.release_date %></td>
+							</tr>
+						<% }) %>
+						
+
+					</tbody>
+				</table>
+			</div> <!-- .col -->
+		</div> <!-- .row -->
+		<div class="row mt-4 mb-4">
+			<div class="col-12">
+				<a href="/searchForm" role="button" class="btn btn-primary">Back to Form</a>
+			</div> <!-- .col -->
+		</div> <!-- .row -->
+	</div> <!-- .container -->
+</body>
+</html>

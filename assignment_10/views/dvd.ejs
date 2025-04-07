@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Details | DVD Database</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/">Home</a></li>
+		<li class="breadcrumb-item"><a href="/searchForm">Search</a></li>
+		<li class="breadcrumb-item"><a href="/searchResults">Results</a></li>
+		<li class="breadcrumb-item active">Details</li>
+	</ol>
+
+	<div class="container">
+		<div class="row">
+			<h1 class="col-12 mt-4">DVD Details</h1>
+		</div> <!-- .row -->
+	</div> <!-- .container -->
+
+	<div class="container">
+
+		<div class="row mt-4">
+			<div class="col-12">
+
+				<table class="table table-responsive">
+
+					<tr>
+						<th class="text-right">Title:</th>
+						<td><%= dvd.title %></td>
+					</tr>
+
+					<tr>
+						<th class="text-right">Release Date:</th>
+						<td><%= dvd.release_date %> </td>
+					</tr>
+
+					<tr>
+						<th class="text-right">Genre:</th>
+						<td><%= dvd.genre %></td>
+					</tr>
+
+					<tr>
+						<th class="text-right">Label:</th>
+						<td><%= dvd.label %></td>
+					</tr>
+
+					<tr>
+						<th class="text-right">Rating:</th>
+						<td><%= dvd.rating %> </td>
+					</tr>
+
+					<tr>
+						<th class="text-right">Sound:</th>
+						<td><%= dvd.sound %></td>
+					</tr>
+
+					<tr>
+						<th class="text-right">Format:</th>
+						<td><%= dvd.format %></td>
+					</tr>
+
+					<tr>
+						<th class="text-right">Award:</th>
+						<td><%= dvd.award %></td>
+					</tr>
+
+				</table>
+
+
+			</div> <!-- .col -->
+		</div> <!-- .row -->
+		<div class="row mt-4 mb-4">
+			<div class="col-12">
+				<a href="/searchResults" role="button" class="btn btn-primary">Back to Search Results</a>
+			</div> <!-- .col -->
+		</div> <!-- .row -->
+	</div> <!-- .container -->
+</body>
+</html>

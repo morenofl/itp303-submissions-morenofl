@@ -1,0 +1,42 @@
+#navbar {
+  background-color: #e8e8c5;
+  color: rgb(91, 88, 88);
+  padding: 10px 20px;
+}
+
+.navbar-brand {
+  color: #15cde9 !important;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-right: auto;
+}
+
+.pinkButton {
+  background-color: #ff8da8 !important;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+
+@media (max-width: 600px) {
+  .container-fluid {
+    padding: 5px 10px;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+    margin-right: 10px;
+  }
+
+  .d-flex.gap-3 {
+    gap: 6px;
+  }
+
+  .pinkButton {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+}
+

@@ -1,0 +1,16 @@
+/* Reset and basic layout */
+html, body, #root {
+    font-family: 'Poppins', sans-serif;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden; 
+    max-width: 100vw;    
+}
+
+/* Ensure everything inside behaves normally */
+*, *::before, *::after {
+    box-sizing: inherit;
+}

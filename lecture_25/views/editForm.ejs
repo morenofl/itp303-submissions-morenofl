@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Edit Form | Song Database</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/">Home</a></li>
+		<li class="breadcrumb-item"><a href="/searchForm">Search</a></li>
+		<li class="breadcrumb-item"><a href="/searchResults">Results</a></li>
+		<li class="breadcrumb-item active">Edit</li>
+	</ol>
+	<div class="container">
+		<div class="row">
+			<h1 class="col-12 mt-4 mb-4">Edit a Song</h1>
+		</div> <!-- .row -->
+	</div> <!-- .container -->
+	<div class="container">
+
+		<form action="/editConfirm" method="POST">
+
+			<input type="hidden" name="trackId" value="<%= track.track_id %>">
+
+			<div class="form-group row">
+				<label for="name-id" class="col-sm-3 col-form-label text-sm-right">
+					Track Name: <span class="text-danger">*</span>
+				</label>
+				<div class="col-sm-9">
+					<input
+						type="text"
+						class="form-control"
+						id="name-id"
+						name="trackName"
+						value="<%= track.name %>"
+					>
+				</div>
+			</div> <!-- .form-group -->
+
+			<div class="form-group row">
+				<label for="genre-id" class="col-sm-3 col-form-label text-sm-right">
+					Genre: <span class="text-danger">*</span>
+				</label>
+				<div class="col-sm-9">
+					<select name="genreId" id="genre-id" class="form-control">
+						<option value="" selected disabled>-- Select One --</option>
+
+            <% genres.forEach( (row) => { %>
+							<% if ( row.genre_id == track.genre_id ) { %>
+								<option value="<%= row.genre_id %>" selected>
+							<% } else { %>
+								<option value="<%= row.genre_id %>">
+							<% } %>
+							
+								<%= row.name %>
+							</option>
+						<% } ) %>
+						
+					</select>
+				</div>
+			</div> <!-- .form-group -->
+
+			<div class="form-group row">
+				<label for="composer-id" class="col-sm-3 col-form-label text-sm-right">
+					Composer:
+				</label>
+				<div class="col-sm-9">
+					<input
+						type="text"
+						name="composer"
+						id="composer-id"
+						class="form-control"
+						value="<%= track.composer %>"
+					>
+				</div>
+			</div> <!-- .form-group -->
+
+			<div class="form-group row">
+				<div class="ml-auto col-sm-9">
+					<span class="text-danger font-italic">* Required</span>
+				</div>
+			</div> <!-- .form-group -->
+
+			<div class="form-group row">
+				<div class="col-sm-3"></div>
+				<div class="col-sm-9 mt-2">
+					<button type="submit" class="btn btn-primary">Submit</button>
+					<button type="reset" class="btn btn-light">Reset</button>
+				</div>
+			</div> <!-- .form-group -->
+		</form>
+	</div> <!-- .container -->
+</body>
+</html>

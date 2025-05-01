@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Song Details | Song Database</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/">Home</a></li>
+		<li class="breadcrumb-item"><a href="/searchForm">Search</a></li>
+		<li class="breadcrumb-item"><a href="/searchResults">Results</a></li>
+		<li class="breadcrumb-item active">Details</li>
+	</ol>
+	<div class="container">
+		<div class="row">
+			<h1 class="col-12 mt-4">Song Details</h1>
+		</div> <!-- .row -->
+	</div> <!-- .container -->
+	<div class="container">
+		<div class="row mt-4">
+			<div class="col-12">
+				
+				<table class="table table-responsive">
+					<tr>
+						<th class="text-right">Track Name:</th>
+						<td><%= track.track %></td>
+					</tr>
+					<tr>
+						<th class="text-right">Artist Name:</th>
+						<td><%= track.artist %></td>
+					</tr>
+					<tr>
+						<th class="text-right">Composer:</th>
+						<td><%= track.composer %></td>
+					</tr>
+					<tr>
+						<th class="text-right">Album:</th>
+						<td><%= track.album %></td>
+					</tr>
+					<tr>
+						<th class="text-right">Genre:</th>
+						<td><%= track.genre %></td>
+					</tr>
+					<tr>
+						<th class="text-right">Milliseconds:</th>
+						<td><%= track.milliseconds %></td>
+					</tr>
+					<tr>
+						<th class="text-right">Bytes:</th>
+						<td><%= track.bytes %></td>
+					</tr>
+					<tr>
+						<th class="text-right">Price:</th>
+						<td><%= track.price %></td>
+					</tr>
+				</table>
+
+			</div> <!-- .col -->
+		</div> <!-- .row -->
+		<div class="row mt-4 mb-4">
+			<div class="col-12">
+				<a href="/searchResults" role="button" class="btn btn-primary">Back to Search Results</a>
+			</div> <!-- .col -->
+		</div> <!-- .row -->
+	</div> <!-- .container -->
+</body>
+</html>

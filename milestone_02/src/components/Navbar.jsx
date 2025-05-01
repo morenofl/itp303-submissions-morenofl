@@ -30,7 +30,7 @@ export default function Navbar() {
   return (
     <nav id="navbar" className="navbar">
       <div className="container d-flex justify-content-between align-items-center">
-        <a className="navbar-brand" href="/">StudyMatch</a>
+        <a className="navbar-brand" href="/#">StudyMatch</a>
 
         <div className="d-flex gap-3">
           <Link to="/search" className="btn pinkButton">Search</Link>

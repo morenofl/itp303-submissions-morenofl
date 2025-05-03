@@ -17,7 +17,17 @@ export default function Navbar() {
     }
   }
 
-  function confirmLogout() {
+  async function confirmLogout() {
+    try {
+      await fetch('http://localhost:3000/api/logout', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+    
     setIsLoggedIn(false);
     setShowConfirmLogout(false);
     navigate('/');

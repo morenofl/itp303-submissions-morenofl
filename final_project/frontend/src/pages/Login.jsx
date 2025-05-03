@@ -16,15 +16,36 @@ export default function Login() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    
-    // TODO: Add real login logic
-    setIsLoggedIn(true);
-    navigate('/');
+    setErrorMessage('');
+  
+    try {
+      const res = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include', // Important to enable session cookies
+        body: JSON.stringify({ email, password })
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok && data.message === 'Success') {
+        setIsLoggedIn(true);
+        navigate('/');
+      } else {
+        setErrorMessage(data.error || 'Login failed');
+      }
+  
+    } catch (err) {
+      console.error('Login error:', err);
+      setErrorMessage('Something went wrong. Please try again.');
+    }
   };
 
-  const handleCreateAccount = (e) => {
+  const handleCreateAccount = async (e) => {
     e.preventDefault();
     
     // Reset any previous error
@@ -34,11 +55,31 @@ export default function Login() {
       setErrorMessage("Passwords do not match."); 
       return;
     }
-    setIsLoggedIn(true);
 
-    // TODO: Add real create account logic
+    try {
+      const res = await fetch('http://localhost:3000/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+  
+      const data = await res.json();
+  
+      if (data.error) {
+        setErrorMessage(data.error);
+        return;
+      }
+  
+      // Success
+      setIsLoggedIn(true);
+      navigate('/');
+    } catch (err) {
+      console.error('Registration failed:', err);
+      setErrorMessage('Something went wrong. Please try again.');
+    }
 
-    navigate('/');
   };
 
   return (

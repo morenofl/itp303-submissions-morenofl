@@ -46,3 +46,16 @@ textarea {
 	justify-content: center;
 	gap: 10px;
 }
+.course-inputs {
+	display: flex;
+	gap: 10px;
+	
+}
+
+.course-select {
+	width: 100%;
+	padding: 10px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	font-size: 1rem;
+}

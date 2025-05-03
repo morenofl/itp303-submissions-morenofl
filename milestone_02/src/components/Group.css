@@ -5,34 +5,64 @@
 	border-radius: 8px;
 	padding: 8px 16px;
 	font-size: 0.95rem;
-	
+
 	cursor: pointer;
 	margin-top: 10px;
 	transition: background-color 0.2s ease;
 }
 
 .join-group-button:hover {
-	
+
 	color: #ff7292;
-  
+
 }
 
 .group-item {
 	width: 100%;
 	max-width: 550px;
-  }
+}
 
 .leave-group-button {
-	background-color: #ff4d4f;
+	background-color: #ff9800;
 	color: black;
 	border: none;
 	border-radius: 8px;
 	padding: 8px 16px;
 	font-size: 0.95rem;
-	
+
 	cursor: pointer;
 	margin-top: 10px;
 	transition: background-color 0.2s ease;
 }
 
 
+
+.admin-buttons {
+	margin-top: 10px;
+}
+
+.edit-group-button {
+	background-color: #ffc107;
+	color: black;
+	border: none;
+	border-radius: 8px;
+	padding: 8px 16px;
+	font-size: 0.95rem;
+
+	cursor: pointer;
+	margin-top: 10px;
+	transition: background-color 0.2s ease;
+}
+
+.delete-group-button {
+	background-color: #ff4d4f;
+	color: black;
+	border: none;
+	border-radius: 8px;
+	padding: 8px 16px;
+	font-size: 0.95rem;
+
+	cursor: pointer;
+	margin-top: 10px;
+	transition: background-color 0.2s ease;
+}

@@ -28,7 +28,8 @@ export default function Search() {
         members: 4,
         meetingTime: "Sundays at 3PM",
         description: "Working on Lab 5 together.",
-        contact: "group1@usc.edu"
+        contact: "group1@usc.edu",
+        creatorEmail: "angel@example.com" // 👈 Replace with real creator
       },
       {
         name: "Group 2",
@@ -36,7 +37,8 @@ export default function Search() {
         members: 6,
         meetingTime: "Tuesdays at 5PM",
         description: "Focusing on the midterm review.",
-        contact: "group2@usc.edu"
+        contact: "group2@usc.edu",
+        creatorEmail: "someoneelse@usc.edu"
       }
     ],
     "MATH 125 - Calculus I": [
@@ -46,7 +48,8 @@ export default function Search() {
         members: 3,
         meetingTime: "Fridays at 2PM",
         description: "Going over integration techniques.",
-        contact: "studysquad@usc.edu"
+        contact: "studysquad@usc.edu",
+        creatorEmail: "angel@example.com"
       },
       {
         name: "Limits Legends",
@@ -54,7 +57,8 @@ export default function Search() {
         members: 5,
         meetingTime: "Mondays at 4PM",
         description: "Limit laws practice and quizzes.",
-        contact: "limitslegends@usc.edu"
+        contact: "limitslegends@usc.edu",
+        creatorEmail: "student123@usc.edu"
       }
     ],
     "PHYS 151 - Fundamentals of Physics I": [
@@ -64,7 +68,8 @@ export default function Search() {
         members: 4,
         meetingTime: "Thursdays at 6PM",
         description: "Working through problem sets together.",
-        contact: "physicsgurus@usc.edu"
+        contact: "physicsgurus@usc.edu",
+        creatorEmail: "physicsfan@usc.edu"
       }
     ],
     "EE 109 - Introduction to Embedded Systems": [
@@ -74,7 +79,8 @@ export default function Search() {
         members: 5,
         meetingTime: "Wednesdays at 7PM",
         description: "Helping each other with Arduino labs.",
-        contact: "embedded@usc.edu"
+        contact: "embedded@usc.edu",
+        creatorEmail: "angel@example.com"
       }
     ]
   };
@@ -126,11 +132,8 @@ export default function Search() {
                     <Group
                       key={idx}
                       name={group.name}
-                      course={group.course}
-                      members={group.members}
-                      meetingTime={group.meetingTime}
-                      description={group.description}
-                      contact={group.contact || 'Not provided'}
+                      group={group}
+                    // 👇 No showAdminButtons prop passed
                     />
                   ))
                 ) : (

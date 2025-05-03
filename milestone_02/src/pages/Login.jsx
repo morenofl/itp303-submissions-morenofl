@@ -7,7 +7,7 @@ import { UserContext } from '../components/UserContext';
 
 
 export default function Login() {
-  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+  const { isLoggedIn, setIsLoggedIn, setEmail: setUserEmail, setUserId } = useContext(UserContext);
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
 
@@ -18,29 +18,31 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
+  
     
-    // TODO: Add real login logic
     setIsLoggedIn(true);
+    setUserEmail(email);
+    setUserId("user-123"); 
+  
     navigate('/');
   };
-
+  
   const handleCreateAccount = (e) => {
     e.preventDefault();
-    
-    // Reset any previous error
     setErrorMessage('');
-
+  
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match."); // 👈 set error instead of alert
+      setErrorMessage("Passwords do not match.");
       return;
     }
+  
+   
     setIsLoggedIn(true);
-
-    // TODO: Add real create account logic
-
+    setUserEmail(email);
+    setUserId("user-456"); 
+  
     navigate('/');
   };
-
   return (
     <>
       <div className="login-page">

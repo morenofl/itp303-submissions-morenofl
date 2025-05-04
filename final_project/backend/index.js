@@ -34,19 +34,19 @@ app.use(express.json());
 
 app.use(session({
 	store: new pgSession({
-	  pool: pool,                 // Connection pool
-	  tableName: 'session',        // Optional: defaults to 'session'
-	  createTableIfMissing: true
+		pool: pool,                 // Connection pool
+		tableName: 'session',        // Optional: defaults to 'session'
+		createTableIfMissing: true
 	}),
 	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false,
 	cookie: {
-	  httpOnly: true,
-	  sameSite: 'none',
-	  secure: true
+		httpOnly: true,
+		sameSite: 'none',
+		secure: true
 	}
-  }));
+}));
 
 
 
@@ -75,33 +75,33 @@ app.get('/api/departments', async (req, res) => {
 // Insert group into groups table and userstudygroups table
 app.post('/api/groups', async (req, res) => {
 	try {
-		
-		
+
+
 		const {
 			name,
 			course_id,
 			meetingTime,
 			description,
 			contact,
-			
-			
-		  } = req.body;
-		  
-		  if (!req.session.user || !req.session.user.user_id) {
+
+
+		} = req.body;
+
+		if (!req.session.user || !req.session.user.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
 
-		  const creatorId = req.session.user.user_id
+		const creatorId = req.session.user.user_id
 
-		  const values = [
+		const values = [
 			name,
 			course_id,
 			1,
 			meetingTime,
 			description,
 			contact,
-			creatorId 
-		  ];
+			creatorId
+		];
 
 		const result = await pool.query(`
 			INSERT INTO studymatch_db.groups
@@ -109,16 +109,16 @@ app.post('/api/groups', async (req, res) => {
 			VALUES ($1, $2, $3, $4, $5, $6, $7)
 			RETURNING *
 		`, values);
-		
+
 		const groupId = result.rows[0].group_id;
-		
+
 		await pool.query(`
 			INSERT INTO studymatch_db.user_study_groups
 			(user_id, group_id)
 			VALUES ($1, $2)
 			
 		`, [creatorId, groupId]);
-		
+
 
 		res.json({
 			message: "Success",
@@ -133,7 +133,7 @@ app.post('/api/groups', async (req, res) => {
 
 //This user is joining this group
 app.post('/api/userGroups', async (req, res) => {
-	
+
 	try {
 		if (!req.session.user?.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
@@ -141,7 +141,7 @@ app.post('/api/userGroups', async (req, res) => {
 		console.log(req.session.user.user_id);
 		const userId = req.session.user.user_id;
 
-		const {group_id} = req.body;
+		const { group_id } = req.body;
 
 		await pool.query(`
 			INSERT INTO studymatch_db.user_study_groups
@@ -156,9 +156,9 @@ app.post('/api/userGroups', async (req, res) => {
 			WHERE group_id = $1
 		`, [group_id]);
 
-		
 
-		
+
+
 
 		res.json({
 			message: "success"
@@ -189,9 +189,9 @@ app.delete('/api/userGroups/:group_id', async (req, res) => {
 			WHERE group_id = $1 AND num_members > 0
 		`, [group_id]);
 
-		
 
-		
+
+
 
 		res.json({
 			message: "success"
@@ -216,7 +216,7 @@ app.delete('/api/groups/:group_id', async (req, res) => {
 			WHERE group_id = $1	
 		`, [group_id]);
 
-		
+
 
 		res.json({
 			message: "success"
@@ -231,13 +231,13 @@ app.put('/api/groups/:group_id', async (req, res) => {
 	try {
 		const groupId = parseInt(req.params.group_id);
 		const {
-		  name,
-		  course_id,
-		  meetingTime,
-		  description,
-		  contact
+			name,
+			course_id,
+			meetingTime,
+			description,
+			contact
 		} = req.body;
-	
+
 		await pool.query(`
 		  UPDATE studymatch_db.groups
 		  SET name = $1,
@@ -247,12 +247,12 @@ app.put('/api/groups/:group_id', async (req, res) => {
 			  contact = $5
 		  WHERE group_id = $6
 		`, [name, course_id, meetingTime, description, contact, groupId]);
-	
+
 		res.json({ message: "Group updated successfully" });
-	  } catch (error) {
+	} catch (error) {
 		console.error("Error updating group:", error);
 		res.status(500).json({ error: "Server error" });
-	  }
+	}
 });
 
 // Get all groups with this id
@@ -260,14 +260,14 @@ app.get('/api/userGroups', async (req, res) => {
 
 	try {
 		console.log('Incoming session:', req.session);
-		
+
 		if (!req.session.user?.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
 
 		const userId = req.session.user.user_id;
-		
-		
+
+
 		const user_groups = await pool.query(`
 			SELECT *
 			FROM studymatch_db.groups
@@ -275,9 +275,9 @@ app.get('/api/userGroups', async (req, res) => {
 				ON groups.group_id = user_study_groups.group_id
 			WHERE user_id = $1
 		`, [userId]);
-		
-		
-		
+
+
+
 
 		res.json(user_groups.rows);
 	} catch (error) {
@@ -290,13 +290,13 @@ app.get('/api/userGroups', async (req, res) => {
 app.get('/api/groups/:course_id', async (req, res) => {
 	try {
 		const id = parseInt(req.params.course_id);
-		
+
 		const groups = await pool.query(`
 			SELECT *
 			FROM studymatch_db.groups
 			WHERE course_id = $1;
 		`, [id]);
-		
+
 
 		res.json(groups.rows);
 
@@ -318,7 +318,7 @@ app.get('/api/courses', async (req, res) => {
 				ON courses.department_id = departments.department_id; 
 		`);
 
-		
+
 
 		res.json(courses.rows);
 	} catch (error) {
@@ -345,7 +345,7 @@ app.post('/api/login', async (req, res) => {
 	  `
 		const values = [email]
 		const results = await pool.query(sql, values)
-		
+
 
 		if (results.rows.length == 0) {
 			res.json({
@@ -366,21 +366,24 @@ app.post('/api/login', async (req, res) => {
 		}
 
 
-		req.session.user = results.rows[0];
+		req.session.user = {
+			user_id: results.rows[0].user_id,
+			email: results.rows[0].email
+		};
 		console.log('Session set:', req.session);
 
 		req.session.save((err) => {
 			if (err) {
-			  console.error("Session save error:", err);
-			  return res.json({ error: "Server error" });
+				console.error("Session save error:", err);
+				return res.json({ error: "Server error" });
 			}
 			return res.json({
-			  message: "Success",
-			  user_id: results.rows[0].user_id
+				message: "Success",
+				user_id: results.rows[0].user_id
 			});
-		  });
-		
-		
+		});
+
+
 
 	} catch (error) {
 		console.log(error);
@@ -429,7 +432,7 @@ app.post('/api/register', async (req, res) => {
 			user_id: newUser.rows[0].user_id,
 			email: newUser.rows[0].email
 		};
-		
+
 		req.session.save((err) => {
 			if (err) {
 				console.error("Session save error:", err);

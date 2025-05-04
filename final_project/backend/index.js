@@ -18,7 +18,7 @@ const pool = new pg.Pool({
 });
 
 app.use(cors({
-	origin: 'http://localhost:5173', // allow your frontend
+	origin: 'https://uscwebdev.github.io', // allow your frontend
 	credentials: true
 }));
 

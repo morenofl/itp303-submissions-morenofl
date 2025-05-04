@@ -7,12 +7,13 @@ import session from 'express-session';
 const app = express();
 const port = 3000;
 
+
 const pool = new pg.Pool({
-	host: 'localhost',
+	host: 'dpg-d09vvr1r0fns73dueoj0-a.oregon-postgres.render.com',
 	port: 5432,
-	user: 'postgres',
-	password: 'root',
-	database: 'itp303'
+	user: 'itpwebdev',
+	password: 'DBPASSWORD',
+	database: 'itp303_62so'
 });
 
 app.use(cors({

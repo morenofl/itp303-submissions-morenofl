@@ -10,7 +10,7 @@ export function CourseProvider({ children }) {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/courses'); 
+        const res = await fetch('https://final-project-ro9j.onrender.com/api/courses'); 
         if (!res.ok) throw new Error('Failed to fetch courses');
         const data = await res.json();
 		

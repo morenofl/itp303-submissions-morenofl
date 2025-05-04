@@ -13,7 +13,8 @@ const pool = new pg.Pool({
 	port: 5432,
 	user: 'itpwebdev',
 	password: 'DBPASSWORD',
-	database: 'itp303_62so'
+	database: 'itp303_62so',
+	ssl: true
 });
 
 app.use(cors({

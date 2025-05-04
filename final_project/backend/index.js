@@ -25,11 +25,19 @@ app.use(cors({
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 app.use(session({
-	secret: "randomly_generated_string_here", // Used to generate a unique ID
-	resave: false, // Do not re-save session variables if variables did not change
-	saveUninitialized: false // Do not create session variables for all visitors. We will create them ourselves
-}))
+	secret: "randomly_generated_string_here",
+	resave: false,
+	saveUninitialized: false,
+	cookie: {
+		httpOnly: true,       // Protects from client-side JS
+		sameSite: 'none',     // Required for cross-origin cookies
+		secure: true          // Required for HTTPS (Render uses HTTPS)
+	}
+}));
 
 
 
@@ -183,6 +191,7 @@ app.delete('/api/userGroups/:group_id', async (req, res) => {
 	}
 });
 
+// Delete this group
 app.delete('/api/groups/:group_id', async (req, res) => {
 	try {
 		const group_id = req.params.group_id;
@@ -207,6 +216,7 @@ app.delete('/api/groups/:group_id', async (req, res) => {
 	}
 });
 
+//Update this group
 app.put('/api/groups/:group_id', async (req, res) => {
 	try {
 		const groupId = parseInt(req.params.group_id);
@@ -272,8 +282,8 @@ app.get('/api/groups/:course_id', async (req, res) => {
 		const groups = await pool.query(`
 			SELECT *
 			FROM studymatch_db.groups
-			WHERE course_id = ${id};
-		`);
+			WHERE course_id = $1;
+		`, [id]);
 		
 
 		res.json(groups.rows);

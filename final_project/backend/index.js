@@ -10,6 +10,7 @@ const app = express();
 const port = 3000;
 
 dotenv.config();
+
 const pgSession = connectPgSimple(session);
 
 
@@ -30,7 +31,8 @@ app.use(express.json());
 app.use(session({
 	store: new pgSession({
 	  pool: pool,                 // Connection pool
-	  tableName: 'session'        // Optional: defaults to 'session'
+	  tableName: 'session',        // Optional: defaults to 'session'
+	  createTableIfMissing: true
 	}),
 	secret: process.env.SESSION_SECRET,
 	resave: false,
@@ -274,7 +276,8 @@ app.get('/api/userGroups', async (req, res) => {
 
 		res.json(user_groups.rows);
 	} catch (error) {
-		
+		console.error("Error fetching user groups:", error);
+		res.status(500).json({ error: "Server error" });
 	}
 });
 

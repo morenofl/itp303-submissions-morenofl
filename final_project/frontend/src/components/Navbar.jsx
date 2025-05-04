@@ -19,7 +19,7 @@ export default function Navbar() {
 
   async function confirmLogout() {
     try {
-      await fetch('http://localhost:3000/api/logout', {
+      await fetch('https://final-project-ro9j.onrender.com/api/logout', {
         method: 'GET',
         credentials: 'include',
       });

@@ -27,7 +27,7 @@ export default function Search() {
     setLoadingGroups(true);
 
     try {
-      const res = await fetch(`http://localhost:3000/api/groups/${course.id}`);
+      const res = await fetch(`https://final-project-ro9j.onrender.com/api/groups/${course.id}`);
       if (!res.ok) throw new Error("Failed to fetch groups");
       const data = await res.json();
       setGroupList(data || []);

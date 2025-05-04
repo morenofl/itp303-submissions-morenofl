@@ -118,7 +118,7 @@ app.post('/api/userGroups', async (req, res) => {
 		if (!req.session.user?.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
-
+		console.log(req.session.user.user_id);
 		const userId = req.session.user.user_id;
 
 		const {group_id} = req.body;

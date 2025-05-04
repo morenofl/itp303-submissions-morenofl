@@ -27,7 +27,7 @@ export default function Login() {
     setErrorMessage('');
 
     try {
-      const res = await fetch('http://localhost:3000/api/login', {
+      const res = await fetch('https://final-project-ro9j.onrender.com/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -63,7 +63,7 @@ export default function Login() {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/api/register', {
+      const res = await fetch('https://final-project-ro9j.onrender.com/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

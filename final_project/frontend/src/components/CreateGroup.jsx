@@ -25,7 +25,7 @@ export default function CreateGroupForm({
 	useEffect(() => {
 		const fetchDepartments = async () => {
 			try {
-				const res = await fetch('http://localhost:3000/api/departments');
+				const res = await fetch('https://final-project-ro9j.onrender.com/api/departments');
 				if (!res.ok) throw new Error('Failed to fetch departments');
 				const data = await res.json();
 				setDepartments(data);
@@ -89,7 +89,7 @@ export default function CreateGroupForm({
 		try {
 			let res, data;
 			if (isEdit && initialValues.group_id) {
-				res = await fetch(`http://localhost:3000/api/groups/${initialValues.group_id}`, {
+				res = await fetch(`https://final-project-ro9j.onrender.com/api/groups/${initialValues.group_id}`, {
 					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
 					credentials: 'include',
@@ -97,7 +97,7 @@ export default function CreateGroupForm({
 				});
 				data = await res.json();
 			} else {
-				res = await fetch('http://localhost:3000/api/groups', {
+				res = await fetch('https://final-project-ro9j.onrender.com/api/groups', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					credentials: 'include',

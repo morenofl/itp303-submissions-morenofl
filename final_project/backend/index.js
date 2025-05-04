@@ -6,12 +6,11 @@ import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
 import dotenv from 'dotenv';
 
+dotenv.config();
+
 const app = express();
 const port = 3000;
 
-dotenv.config();
-
-const pgSession = connectPgSimple(session);
 
 
 const pool = new pg.Pool({
@@ -19,13 +18,18 @@ const pool = new pg.Pool({
 	ssl: { rejectUnauthorized: false }
 });
 
+const pgSession = connectPgSimple(session);
+
+
 app.use(cors({
 	origin: 'https://uscwebdev.github.io', // allow your frontend
 	credentials: true
 }));
 
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
 
 
 app.use(session({
@@ -255,7 +259,8 @@ app.put('/api/groups/:group_id', async (req, res) => {
 app.get('/api/userGroups', async (req, res) => {
 
 	try {
-
+		console.log('Incoming session:', req.session);
+		
 		if (!req.session.user?.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
@@ -362,6 +367,7 @@ app.post('/api/login', async (req, res) => {
 
 
 		req.session.user = results.rows[0];
+		console.log('Session set:', req.session);
 
 		req.session.save((err) => {
 			if (err) {

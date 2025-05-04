@@ -11,6 +11,7 @@ export default function Home() {
 				<p>Are you looking for a study group in a class you are taking?</p>
 				<p>StudyMatch connects college students taking the same classes. We make studying for classes and finding new friends easier.</p>
 			</div>
+			<></>
 		</div>
 	</>
 	

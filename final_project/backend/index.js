@@ -3,18 +3,19 @@ import pg from 'pg';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
+import dotenv from 'dotenv';
 
 const app = express();
 const port = 3000;
 
+dotenv.config();
+const pgSession = connectPgSimple(session);
+
 
 const pool = new pg.Pool({
-	host: 'dpg-d09vvr1r0fns73dueoj0-a.oregon-postgres.render.com',
-	port: 5432,
-	user: 'itpwebdev',
-	password: 'DBPASSWORD',
-	database: 'itp303_62so',
-	ssl: true
+	connectionString: process.env.DATABASE_URL,
+	ssl: { rejectUnauthorized: false }
 });
 
 app.use(cors({
@@ -26,17 +27,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 
-
 app.use(session({
-	secret: "randomly_generated_string_here",
+	store: new pgSession({
+	  pool: pool,                 // Connection pool
+	  tableName: 'session'        // Optional: defaults to 'session'
+	}),
+	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false,
 	cookie: {
-		httpOnly: true,       // Protects from client-side JS
-		sameSite: 'none',     // Required for cross-origin cookies
-		secure: true          // Required for HTTPS (Render uses HTTPS)
+	  httpOnly: true,
+	  sameSite: 'none',
+	  secure: true
 	}
-}));
+  }));
+
 
 
 

@@ -1,70 +1,153 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './CreateGroup.css';
+import { UserContext } from '../components/UserContext';
+import { CourseContext } from '../components/CourseContext';
 
-export default function CreateGroupForm({ onSubmit, onCancel }) {
+export default function CreateGroupForm({
+	onSubmit,
+	onCancel,
+	initialValues = {},
+	isEdit = false
+}) {
 	const [name, setName] = useState('');
-	const [courseDept, setCourseDept] = useState('');
+	const [courseDeptId, setCourseDeptId] = useState('');
 	const [courseNum, setCourseNum] = useState('');
 	const [meetingTime, setMeetingTime] = useState('');
 	const [description, setDescription] = useState('');
 	const [contact, setContact] = useState('');
 	const [departments, setDepartments] = useState([]);
+	const [filteredCourses, setFilteredCourses] = useState([]);
 
-	// Fetch departments on component mount
+	const { email: currentUserEmail, user_id } = useContext(UserContext);
+	const { coursesData, loadingCourses } = useContext(CourseContext);
+
+	// Fetch department list
 	useEffect(() => {
 		const fetchDepartments = async () => {
-		  try {
-			const res = await fetch('http://localhost:3000/api/groups'); // Proxy handles this
-			if (!res.ok) throw new Error('Failed to fetch departments');
-			const data = await res.json();
-			setDepartments(data); // Set fetched departments
-			console.log(data);
-		  } catch (err) {
-			console.error('Error fetching departments:', err);
-		  }
+			try {
+				const res = await fetch('http://localhost:3000/api/departments');
+				if (!res.ok) throw new Error('Failed to fetch departments');
+				const data = await res.json();
+				setDepartments(data);
+			} catch (err) {
+				console.error('Error fetching departments:', err);
+			}
 		};
-	
 		fetchDepartments();
-	  }, []);
+	}, []);
 
-	// Example departments and course numbers (customize as needed)
-	
-	const courseNumbers = ['101', '102', '170', '201', '270', '303', '401'];
+	useEffect(() => {
+		if (isEdit && initialValues) {
+			setName(initialValues.name || '');
+			setMeetingTime(initialValues.meeting_time || '');
+			setDescription(initialValues.description || '');
+			setContact(initialValues.contact || '');
+			const course = coursesData.find((c) => c.course_id === initialValues.course_id);
 
-	const handleSubmit = (e) => {
+
+			if (course) {
+				const deptObj = departments.find((d) => d.code === course.code);
+				setCourseDeptId(deptObj?.department_id || '');
+				setCourseNum(course.number || '');
+			}
+
+		}
+	}, [isEdit, initialValues, departments]);
+
+	// Filter courses based on selected department ID
+	useEffect(() => {
+
+
+		const deptCode = departments.find((d) => d.department_id == courseDeptId)?.code || '';
+
+		const filtered = coursesData.filter(course => course.code === deptCode);
+		setFilteredCourses(filtered);
+	}, [courseDeptId, coursesData, departments]);
+
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const trimmedName = name.trim();
-		const trimmedDept = courseDept.trim().toUpperCase();
-		const trimmedNum = courseNum.trim();
-
-		if (!trimmedName || !trimmedDept || !trimmedNum) return;
-
-		onSubmit({
-			name: trimmedName,
-			courseDept: trimmedDept,
-			courseNum: trimmedNum,
+	
+		const deptCode = departments.find((d) => d.department_id == courseDeptId)?.code || '';
+		const selected_course = coursesData.find((d) =>
+			String(d.code) == deptCode && String(d.number) == courseNum
+		)?.course_id;
+	
+		if (!selected_course) {
+			console.error("No matching course found.");
+			return;
+		}
+	
+		const groupPayload = {
+			name: name.trim(),
+			course_id: selected_course,
 			meetingTime: meetingTime.trim(),
 			description: description.trim(),
-			contactEmail: contact.trim()
-		});
+			contact: contact.trim(),
+			creator: user_id
+		};
+	
+		try {
+			let res, data;
+			if (isEdit && initialValues.group_id) {
+				res = await fetch(`http://localhost:3000/api/groups/${initialValues.group_id}`, {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					credentials: 'include',
+					body: JSON.stringify(groupPayload)
+				});
+				data = await res.json();
+			} else {
+				res = await fetch('http://localhost:3000/api/groups', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					credentials: 'include',
+					body: JSON.stringify(groupPayload)
+				});
+				data = await res.json();
+			}
+	
+			if (!res.ok) {
+				console.error(isEdit ? 'Failed to update group:' : 'Failed to create group:', data);
+				return;
+			}
+	
+			// Clear form only on creation
+			if (!isEdit) {
+				setName('');
+				setCourseDeptId('');
+				setCourseNum('');
+				setMeetingTime('');
+				setDescription('');
+				setContact('');
+			}
+	
+			if (onSubmit) {
+				onSubmit(data.group || groupPayload); // Pass updated data back
+			}
+		} catch (err) {
+			console.error(isEdit ? 'Error updating group:' : 'Error creating group:', err);
+		}
 	};
+	
 
 	return (
 		<div className="form-popup-overlay">
 			<div className="form-card">
-				<h3>Create New Group</h3>
+				<h3>{isEdit ? 'Edit Group' : 'Create New Group'}</h3>
 				<form onSubmit={handleSubmit} className="form-fields">
 					<input
 						type="text"
 						placeholder="Group Name"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
+						disabled={isEdit}
 						required
 					/>
+
 					<div className="course-inputs">
 						<select
-							value={courseDept}
-							onChange={(e) => setCourseDept(e.target.value)}
+							value={courseDeptId}
+							onChange={(e) => setCourseDeptId(e.target.value)}
 							required
 							className="course-select"
 						>
@@ -81,15 +164,20 @@ export default function CreateGroupForm({ onSubmit, onCancel }) {
 							onChange={(e) => setCourseNum(e.target.value)}
 							required
 							className="course-select"
+							disabled={loadingCourses || !courseDeptId}
 						>
 							<option value="">Select Course Number</option>
-							{courseNumbers.map((num) => (
-								<option key={num} value={num}>
-									{num}
+							{filteredCourses.length === 0 && courseDeptId && (
+								<option disabled>No courses available</option>
+							)}
+							{filteredCourses.map((course) => (
+								<option key={course.course_id} value={course.number}>
+									{course.number}
 								</option>
 							))}
 						</select>
 					</div>
+
 					<input
 						type="text"
 						placeholder="Meeting Time"
@@ -100,16 +188,21 @@ export default function CreateGroupForm({ onSubmit, onCancel }) {
 						placeholder="Description"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
-					></textarea>
+					/>
 					<input
 						type="email"
 						placeholder="Contact Email"
 						value={contact}
 						onChange={(e) => setContact(e.target.value)}
 					/>
+
 					<div className="form-buttons">
-						<button type="submit" className="pinkButton">Create</button>
-						<button type="button" className="cancelButton" onClick={onCancel}>Cancel</button>
+						<button type="submit" className="pinkButton">
+							{isEdit ? 'Save Changes' : 'Create'}
+						</button>
+						<button type="button" className="cancelButton" onClick={onCancel}>
+							Cancel
+						</button>
 					</div>
 				</form>
 			</div>

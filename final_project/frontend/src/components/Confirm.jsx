@@ -7,7 +7,7 @@ export default function Confirm({
   onConfirm,
   onCancel,
   confirmLabel = "Yes",
-  cancelLabel = "Cancel"
+  cancelLabel
 }) {
   return (
     <div className="leave-popup">

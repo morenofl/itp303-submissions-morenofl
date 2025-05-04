@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import './Login.css';
-import { useContext } from 'react';
 import { UserContext } from '../components/UserContext';
 
-
 export default function Login() {
-  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+  const {
+    isLoggedIn,
+    setIsLoggedIn,
+    email,
+    setEmail,
+    user_id,
+    setUserId
+  } = useContext(UserContext);
+
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
 
-  const [email, setEmail] = useState('');
+  const [localEmail, setLocalEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -19,26 +25,28 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage('');
-  
+
     try {
       const res = await fetch('http://localhost:3000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include', // Important to enable session cookies
-        body: JSON.stringify({ email, password })
+        credentials: 'include',
+        body: JSON.stringify({ email: localEmail, password })
       });
-  
+
       const data = await res.json();
-  
+
       if (res.ok && data.message === 'Success') {
         setIsLoggedIn(true);
+        setEmail(localEmail);
+        
+        setUserId(data.user_id || ''); // depends on your backend response
         navigate('/');
       } else {
         setErrorMessage(data.error || 'Login failed');
       }
-  
     } catch (err) {
       console.error('Login error:', err);
       setErrorMessage('Something went wrong. Please try again.');
@@ -47,12 +55,10 @@ export default function Login() {
 
   const handleCreateAccount = async (e) => {
     e.preventDefault();
-    
-    // Reset any previous error
     setErrorMessage('');
 
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match."); 
+      setErrorMessage("Passwords do not match.");
       return;
     }
 
@@ -60,26 +66,28 @@ export default function Login() {
       const res = await fetch('http://localhost:3000/api/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          
         },
-        body: JSON.stringify({ email, password })
+        credentials: 'include',
+        body: JSON.stringify({ email: localEmail, password })
       });
-  
+
       const data = await res.json();
-  
+
       if (data.error) {
         setErrorMessage(data.error);
         return;
       }
-  
-      // Success
+
       setIsLoggedIn(true);
+      setEmail(localEmail);
+      setUserId(data.user_id || '');
       navigate('/');
     } catch (err) {
       console.error('Registration failed:', err);
       setErrorMessage('Something went wrong. Please try again.');
     }
-
   };
 
   return (
@@ -95,8 +103,8 @@ export default function Login() {
                 type="email"
                 id="email"
                 name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={localEmail}
+                onChange={(e) => setLocalEmail(e.target.value)}
                 required
               />
             </div>
@@ -127,24 +135,22 @@ export default function Login() {
               </div>
             )}
 
-            {/* 👇 Show error message if exists */}
-          {errorMessage && (
-            <div className="error-message">
-              {errorMessage}
-            </div>
-          )}
+            {errorMessage && (
+              <div className="error-message">
+                {errorMessage}
+              </div>
+            )}
+
             <button type="submit" className="btn login-button">
               {isLogin ? "Login" : "Create Account"}
             </button>
           </form>
 
-          
-
           <button
             className="login-button btn create-account-button"
             onClick={() => {
               setIsLogin(!isLogin);
-              setErrorMessage(''); // reset errors when switching forms
+              setErrorMessage('');
             }}
           >
             {isLogin ? "Create New Account" : "Already Have an Account? Login"}

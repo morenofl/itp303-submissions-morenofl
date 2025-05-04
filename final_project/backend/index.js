@@ -29,19 +29,10 @@ app.use(session({
 	saveUninitialized: false // Do not create session variables for all visitors. We will create them ourselves
 }))
 
-app.get('/search', (req, res) => {
-	try {
-		const sql = `
-			SELECT *
-			FROM studymatch_db
-		`
-	} catch (error) {
-		console.log("Server Error");
-		res.json({ message: 'Server Error' });
-	}
-});
 
-app.get('/api/groups', async (req, res) => {
+
+// Get all Departments
+app.get('/api/departments', async (req, res) => {
 	try {
 
 
@@ -50,9 +41,6 @@ app.get('/api/groups', async (req, res) => {
 			FROM studymatch_db.departments
 		`);
 
-
-
-		console.log(departments.rows);
 
 		res.json(departments.rows);
 
@@ -64,16 +52,227 @@ app.get('/api/groups', async (req, res) => {
 	}
 });
 
+// Insert group into groups table and userstudygroups table
+app.post('/api/groups', async (req, res) => {
+	try {
+		
+		
+		const {
+			name,
+			course_id,
+			meetingTime,
+			description,
+			contact,
+			
+			
+		  } = req.body;
+		  
+		  if (!req.session.user || !req.session.user.user_id) {
+			return res.status(401).json({ error: 'Not logged in' });
+		}
 
+		  const creatorId = req.session.user.user_id
+
+		  const values = [
+			name,
+			course_id,
+			1,
+			meetingTime,
+			description,
+			contact,
+			creatorId 
+		  ];
+
+		const result = await pool.query(`
+			INSERT INTO studymatch_db.groups
+			(name, course_id, num_members, meeting_time, description, contact, created_by)
+			VALUES ($1, $2, $3, $4, $5, $6, $7)
+			RETURNING *
+		`, values);
+		
+		const groupId = result.rows[0].group_id;
+		
+		await pool.query(`
+			INSERT INTO studymatch_db.user_study_groups
+			(user_id, group_id)
+			VALUES ($1, $2)
+			
+		`, [creatorId, groupId]);
+		
+
+		res.json({
+			message: "Success",
+			group: result.rows[0]
+		})
+	} catch (error) {
+		console.log("Server Error");
+		console.log(error);
+		res.json({ message: 'Server Error' });
+	}
+});
+
+//This user is joining this group
+app.post('/api/userGroups', async (req, res) => {
+	
+	try {
+		if (!req.session.user?.user_id) {
+			return res.status(401).json({ error: 'Not logged in' });
+		}
+
+		const userId = req.session.user.user_id;
+
+		const {group_id} = req.body;
+
+		await pool.query(`
+			INSERT INTO studymatch_db.user_study_groups
+				(user_id, group_id)
+			VALUES
+				($1, $2)
+		`, [userId, group_id,]);
+
+		await pool.query(`
+			UPDATE studymatch_db.groups
+			SET num_members = num_members + 1
+			WHERE group_id = $1
+		`, [group_id]);
+
+		
+
+		
+
+		res.json({
+			message: "success"
+		})
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+// The user is leaving this group
+app.delete('/api/userGroups/:group_id', async (req, res) => {
+	try {
+		const group_id = req.params.group_id;
+		if (!req.session.user?.user_id) {
+			return res.status(401).json({ error: 'Not logged in' });
+		}
+
+		const userId = req.session.user.user_id;
+
+		await pool.query(`
+			DELETE FROM studymatch_db.user_study_groups
+			WHERE user_id = $1 AND group_id = $2
+		`, [userId, group_id]);
+
+		await pool.query(`
+			UPDATE studymatch_db.groups
+			SET num_members = num_members - 1
+			WHERE group_id = $1 AND num_members > 0
+		`, [group_id]);
+
+		
+
+		
+
+		res.json({
+			message: "success"
+		})
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+app.delete('/api/groups/:group_id', async (req, res) => {
+	try {
+		const group_id = req.params.group_id;
+
+		await pool.query(`
+			DELETE FROM studymatch_db.user_study_groups
+			WHERE group_id = $1
+		`, [group_id]);
+
+		await pool.query(`
+			DELETE FROM studymatch_db.groups
+			WHERE group_id = $1	
+		`, [group_id]);
+
+		
+
+		res.json({
+			message: "success"
+		})
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+app.put('/api/groups/:group_id', async (req, res) => {
+	try {
+		const groupId = parseInt(req.params.group_id);
+		const {
+		  name,
+		  course_id,
+		  meetingTime,
+		  description,
+		  contact
+		} = req.body;
+	
+		await pool.query(`
+		  UPDATE studymatch_db.groups
+		  SET name = $1,
+			  course_id = $2,
+			  meeting_time = $3,
+			  description = $4,
+			  contact = $5
+		  WHERE group_id = $6
+		`, [name, course_id, meetingTime, description, contact, groupId]);
+	
+		res.json({ message: "Group updated successfully" });
+	  } catch (error) {
+		console.error("Error updating group:", error);
+		res.status(500).json({ error: "Server error" });
+	  }
+});
+
+// Get all groups with this id
+app.get('/api/userGroups', async (req, res) => {
+
+	try {
+
+		if (!req.session.user?.user_id) {
+			return res.status(401).json({ error: 'Not logged in' });
+		}
+
+		const userId = req.session.user.user_id;
+		
+		
+		const user_groups = await pool.query(`
+			SELECT *
+			FROM studymatch_db.groups
+			LEFT JOIN studymatch_db.user_study_groups
+				ON groups.group_id = user_study_groups.group_id
+			WHERE user_id = $1
+		`, [userId]);
+		
+		
+		
+
+		res.json(user_groups.rows);
+	} catch (error) {
+		
+	}
+});
+
+// Get groups in the course id
 app.get('/api/groups/:course_id', async (req, res) => {
 	try {
 		const id = parseInt(req.params.course_id);
-
+		
 		const groups = await pool.query(`
 			SELECT *
 			FROM studymatch_db.groups
 			WHERE course_id = ${id};
 		`);
+		
 
 		res.json(groups.rows);
 
@@ -85,8 +284,7 @@ app.get('/api/groups/:course_id', async (req, res) => {
 	}
 });
 
-
-
+// Get all courses
 app.get('/api/courses', async (req, res) => {
 	try {
 		const courses = await pool.query(`
@@ -96,7 +294,7 @@ app.get('/api/courses', async (req, res) => {
 				ON courses.department_id = departments.department_id; 
 		`);
 
-		console.log("request for courses");
+		
 
 		res.json(courses.rows);
 	} catch (error) {
@@ -144,14 +342,20 @@ app.post('/api/login', async (req, res) => {
 		}
 
 
-		req.session.user = {
-			id: results.rows[0].user_id, // or whatever your primary key is
-			email: results.rows[0].email
-		};
+		req.session.user = results.rows[0];
 
-		res.json({
-			message: "Success"
-		});
+		req.session.save((err) => {
+			if (err) {
+			  console.error("Session save error:", err);
+			  return res.json({ error: "Server error" });
+			}
+			return res.json({
+			  message: "Success",
+			  user_id: results.rows[0].user_id
+			});
+		  });
+		
+		
 
 	} catch (error) {
 		console.log(error);
@@ -159,9 +363,7 @@ app.post('/api/login', async (req, res) => {
 	}
 });
 
-app.get('/register', (req, res) => {
-	res.render('registerForm');
-});
+
 
 app.post('/api/register', async (req, res) => {
 	try {
@@ -177,9 +379,9 @@ app.post('/api/register', async (req, res) => {
 		`
 		const valuesRegistered = [email]
 
-		const results = await pool.query(sqlRegistered, valuesRegistered)
+		const existingUser = await pool.query(sqlRegistered, valuesRegistered)
 
-		if (results.rows.length > 0) {
+		if (existingUser.rows.length > 0) {
 			res.json({
 				error: "Username or email already registered."
 			})
@@ -191,15 +393,29 @@ app.post('/api/register', async (req, res) => {
 
 		const sql = `
 		  INSERT INTO studymatch_db.users (email, password)
-		  VALUES ($1, $2);
+		  VALUES ($1, $2)
+		  RETURNING *
 		`
 		const values = [email, hashedPassword]
 
-		await pool.query(sql, values)
+		const newUser = await pool.query(sql, values)
 
-		res.json({
-			message: "Success"
-		})
+		req.session.user = {
+			user_id: newUser.rows[0].user_id,
+			email: newUser.rows[0].email
+		};
+		
+		req.session.save((err) => {
+			if (err) {
+				console.error("Session save error:", err);
+				return res.json({ error: "Server error" });
+			}
+			return res.json({
+				message: "Success",
+				user_id: newUser.rows[0].user_id
+			});
+		});
+
 
 	} catch (error) {
 		console.log(error);

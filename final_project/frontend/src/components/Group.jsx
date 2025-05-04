@@ -1,32 +1,102 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../components/UserContext';
 import './Group.css';
 import Confirm from './Confirm';
+import CreateGroupForm from './CreateGroup';
+import { CourseContext } from './CourseContext';
 
-export default function Group({ name, course, members, meetingTime, description, contact }) {
-  const { isLoggedIn, userGroups, setUserGroups } = useContext(UserContext);
+export default function Group({
+  name,
+  group = {},
+  course,
+  members,
+  meetingTime,
+  description,
+  contact,
+  onDeleteRequest,
+  onEditSubmit,
+  onEditRequest,
+  showAdminButtons
+}) {
+  const { coursesData } = useContext(CourseContext);
+  const { isLoggedIn, userGroups, setUserGroups, email: currentUserEmail } = useContext(UserContext);
+
   const [showConfirmLeave, setShowConfirmLeave] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [showJoinSuccess, setShowJoinSuccess] = useState(false);
+  
+  const [isInGroup, setIsInGroup] = useState(false);
 
-  const isInGroup = userGroups.includes(name);
+  const unifiedCourses = coursesData.map(course => ({
+    id: course.course_id,
+    label: `${course.code} ${course.number} - ${course.title}`
+  }));
 
-  const handleJoin = () => {
+  const selected_course = unifiedCourses.find((d) => d.id == group.course_id)?.label || group.course || 'Unknown Course';
+  const groupName = name || group.name;
+  const groupCourse = selected_course || group.course;
+  const groupMembers = members || group.num_members;
+  const groupMeetingTime = meetingTime || group.meeting_time;
+  const groupDescription = description || group.description;
+  const groupContact = contact || group.contact;
+  const groupCreator = group.created_by;
+
+  
+  useEffect(() => {
+    setIsInGroup(userGroups.some(g => g.group_id === group.group_id));
+  }, [userGroups, group.group_id]);
+
+  const handleJoin = async () => {
     if (!isLoggedIn) {
-      alert("Please log in to join a group.");
+      setShowLoginPrompt(true);
       return;
     }
-    if (!isInGroup) {
-      setUserGroups([...userGroups, name]);
-      alert(`You joined ${name}!`);
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/userGroups`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ group_id: group.group_id })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Join failed:", data);
+        return;
+      }
+
+      setUserGroups(prev => [...prev, group]);
+      setShowJoinSuccess(true);
+    } catch (err) {
+      console.error("Error joining group:", err);
     }
   };
 
   const handleLeave = () => {
-    setShowConfirmLeave(true); // Show popup
+    setShowConfirmLeave(true);
   };
 
-  const confirmLeave = () => {
-    setUserGroups(userGroups.filter(g => g !== name));
-    setShowConfirmLeave(false);
+  const confirmLeave = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/userGroups/${group.group_id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Leave failed:", data);
+        return;
+      }
+      setIsInGroup(false);
+      setUserGroups(prev => prev.filter(g => g.group_id !== group.group_id));
+      setShowConfirmLeave(false);
+    } catch (err) {
+      console.error("Error leaving group:", err);
+    }
   };
 
   const cancelLeave = () => {
@@ -35,34 +105,59 @@ export default function Group({ name, course, members, meetingTime, description,
 
   return (
     <li className="group-item">
-      <h3>{name}</h3>
-      <p><strong>Course: </strong>{course}</p>
-      <p><strong>Members:</strong> {members}</p>
-      <p><strong>Meeting:</strong> {meetingTime}</p>
-      <p><strong>About:</strong> {description}</p>
-      <p><strong>Contact:</strong> {contact}</p>
-
+      <h3>{groupName}</h3>
+      <p><strong>Course:</strong> {groupCourse}</p>
+      <p><strong>Members:</strong> {groupMembers}</p>
+      <p><strong>Meeting:</strong> {groupMeetingTime}</p>
+      <p><strong>About:</strong> {groupDescription}</p>
       {isInGroup ? (
-        <button className="leave-group-button" onClick={handleLeave}>
-          Leave Group
-        </button>
+        <p><strong>Contact:</strong> {groupContact}</p>
       ) : (
-        <button className="join-group-button" onClick={handleJoin}>
-          Join Group
-        </button>
+        <p><strong>Contact:</strong> <em>Join the group to view contact info</em></p>
       )}
+
+      <div className="group-buttons">
+        {isInGroup ? (
+          <button className="leave-group-button" onClick={handleLeave}>Leave Group</button>
+        ) : (
+          <button className="join-group-button" onClick={handleJoin}>Join Group</button>
+        )}
+
+        {showAdminButtons && (
+          <>
+            <button className="edit-group-button" onClick={() => onEditRequest?.(group)}>Edit</button>
+            <button className="delete-group-button" onClick={() => onDeleteRequest?.(groupName)}>Delete</button>
+          </>
+        )}
+      </div>
 
       {showConfirmLeave && (
         <Confirm
-          message={`Are you sure you want to leave ${name}?`}
+          message={`Are you sure you want to leave "${groupName}"?`}
           onConfirm={confirmLeave}
           onCancel={cancelLeave}
           confirmLabel="Yes, Leave"
           cancelLabel="Cancel"
         />
       )}
+
+      {showLoginPrompt && (
+        <Confirm
+          message="You must be logged in to join a group."
+          onConfirm={() => setShowLoginPrompt(false)}
+          confirmLabel="OK"
+        />
+      )}
+
+      {showJoinSuccess && (
+        <Confirm
+          message={`You successfully joined "${groupName}".`}
+          onConfirm={() => setShowJoinSuccess(false)}
+          confirmLabel="OK"
+        />
+      )}
+
+      
     </li>
   );
 }
-
-

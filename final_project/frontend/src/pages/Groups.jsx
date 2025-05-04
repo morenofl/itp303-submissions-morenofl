@@ -1,74 +1,106 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../components/UserContext';
 import Navbar from '../components/Navbar';
 import Group from '../components/Group';
 import './Groups.css';
-import Confirm from '../components/Confirm';
 import CreateGroup from '../components/CreateGroup';
+import Confirm from '../components/Confirm';
 
 export default function GroupsPage() {
-  const { isLoggedIn, userGroups, setUserGroups } = useContext(UserContext);
+  const { isLoggedIn, email: currentUserEmail, user_id, userGroups, setUserGroups } = useContext(UserContext);
 
   const [showCreatePopup, setShowCreatePopup] = useState(false);
+  const [groupToDelete, setGroupToDelete] = useState(null);
+  const [editingGroup, setEditingGroup] = useState(null);
 
-  const [groupDetailsMap, setGroupDetailsMap] = useState({
-    "Group 1": {
-      course: "CSCI 201 - Principles of Software Development",
-      members: 4,
-      meetingTime: "Sundays at 3PM",
-      description: "Working on Lab 5 together.",
-      contact: "group1@usc.edu"
-    },
-    "Group 2": {
-      course: "CSCI 201 - Principles of Software Development",
-      members: 6,
-      meetingTime: "Tuesdays at 5PM",
-      description: "Focusing on the midterm review.",
-      contact: "cs201study@usc.edu"
-    },
-    "Study Squad": {
-      course: "MATH 125 - Calculus I",
-      members: 3,
-      meetingTime: "Fridays at 2PM",
-      description: "Going over integration techniques.",
-      contact: "math125help@usc.edu"
-    },
-    "Limits Legends": {
-      course: "MATH 125 - Calculus I",
-      members: 5,
-      meetingTime: "Mondays at 4PM",
-      description: "Limit laws practice and quizzes.",
-      contact: "limitslegends@usc.edu"
-    },
-    "Physics Gurus": {
-      course: "PHYS 151 - Fundamentals of Physics I",
-      members: 4,
-      meetingTime: "Thursdays at 6PM",
-      description: "Working through problem sets together.",
-      contact: "physgurus@usc.edu"
-    },
-    "Embedded Enthusiasts": {
-      course: "EE 109 - Introduction to Embedded Systems",
-      members: 5,
-      meetingTime: "Wednesdays at 7PM",
-      description: "Helping each other with Arduino labs.",
-      contact: "ee109team@usc.edu"
-    }
-  });
   
+  const [loading, setLoading] = useState(true);
 
-  const handleCreateClick = () => {
-    setShowCreatePopup(true);
+ 
+  useEffect(() => {
+    const fetchUserGroups = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/userGroups`, {
+          method: 'GET',
+          credentials: 'include'
+        });
+        if (!res.ok) throw new Error('Failed to fetch user groups');
+        const data = await res.json();
+        
+        setUserGroups(data || []);
+        
+      } catch (err) {
+        console.error('Error fetching groups:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isLoggedIn && currentUserEmail) {
+      fetchUserGroups();
+    }
+  }, [isLoggedIn, currentUserEmail]);
+
+  const handleCreateClick = () => setShowCreatePopup(true);
+  const cancelCreate = () => setShowCreatePopup(false);
+
+  const handleRequestDelete = (groupId) => setGroupToDelete(groupId);
+  const cancelDeleteGroup = () => setGroupToDelete(null);
+
+  const confirmDeleteGroup = async () => {
+    if (!groupToDelete) return;
+    try {
+      await fetch(`http://localhost:3000/api/groups/${groupToDelete}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      setUserGroups(prev => prev.filter(group => group.group_id != groupToDelete));
+      
+    } catch (err) {
+      console.error('Failed to delete group:', err);
+    } finally {
+      setGroupToDelete(null);
+    }
   };
 
-  const confirmCreate = () => {
-    setShowCreatePopup(false);
-    alert('Group creation coming soon!');
+  const handleEditGroup = async (originalName, updatedGroup) => {
+    try {
+      const groupToUpdate = userGroups.find(g => g.name === originalName);
+      if (!groupToUpdate) {
+        console.error("Original group not found.");
+        return;
+      }
+  
+      const response = await fetch(`http://localhost:3000/api/groups/${groupToUpdate.group_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(updatedGroup)
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        console.error('Failed to update group:', result);
+        return;
+      }
+  
+      // Update frontend state only if backend update succeeds
+      setUserGroups(prev =>
+        prev.map(group =>
+          group.group_id === groupToUpdate.group_id
+            ? { ...group, ...updatedGroup }
+            : group
+        )
+      );
+      setEditingGroup(null);
+    } catch (err) {
+      console.error('Error updating group:', err);
+    }
   };
-
-  const cancelCreate = () => {
-    setShowCreatePopup(false);
-  };
+  
 
   return (
     <>
@@ -76,62 +108,70 @@ export default function GroupsPage() {
       <div className="search-page-body">
         <div className="left-column">
           <h2 className="search-title">My Groups</h2>
+
           {isLoggedIn ? (
             <>
-              <ul className="group-list">
-                {userGroups.length > 0 ? (
-                  userGroups.map((groupName, index) => {
-                    const groupInfo = groupDetailsMap[groupName];
-                    return (
+              {loading ? (
+                <p>Loading your groups...</p>
+              ) : (
+                <ul className="group-list">
+                  {userGroups.length > 0 ? (
+                    userGroups.map((group, index) => (
                       <Group
-                        key={index}
-                        name={groupName}
-                        course={groupInfo?.course || 'Unspecified Course'}
-                        members={groupInfo?.members || 'N/A'}
-                        meetingTime={groupInfo?.meetingTime || 'TBD'}
-                        description={groupInfo?.description || 'No description available.'}
-                        contact={groupInfo?.contact || 'No contact provided.'}
+                        key={group.group_id || index}
+                        name={group.name}
+                        group={group}
+                        onDeleteRequest={() => handleRequestDelete(group.group_id)}
+                        onEditSubmit={handleEditGroup}
+                        onEditRequest={(g) => setEditingGroup(g)} 
+                        showAdminButtons={user_id == group.created_by}
                       />
-                    );
-                  })
-                ) : (
-                  <div className="groupPageMessage">
-                    Use the Search Page to join study groups! Or create a group below!
+                    ))
+                  ) : (
+                    <div className="groupPageMessage">
+                      Use the Search Page to join study groups! Or create a group below!
+                    </div>
+                  )}
+                </ul>
+              )}
 
-                  </div>
-                )}
-              </ul>
-
-              {/* Create Group Button */}
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                <button className="pinkButton" onClick={handleCreateClick}>
-                  Create Group
-                </button>
+                <button className="pinkButton" onClick={handleCreateClick}>Create Group</button>
               </div>
             </>
           ) : (
-            <div className="groupPageMessage">
-              Please log in to view your groups.
-            </div>
+            <div className="groupPageMessage">Please log in to view your groups.</div>
           )}
 
-          {/* Create Group Popup */}
           {showCreatePopup && (
             <CreateGroup
               onSubmit={(newGroup) => {
-                const newGroupName = newGroup.name.trim();
-
-                // Add group name to user's list
-                if (newGroupName && !userGroups.includes(newGroupName)) {
-                  setUserGroups([...userGroups, newGroupName]);
-                }
-
-                // Optionally add it to groupDetailsMap if made stateful in future
-
+                setUserGroups(prev => [...prev, newGroup]);
                 setShowCreatePopup(false);
-                alert(`Created group: ${newGroupName}`);
               }}
               onCancel={cancelCreate}
+            />
+          )}
+
+          {groupToDelete && (
+            <Confirm
+              message={`Are you sure you want to delete this group?`}
+              onConfirm={confirmDeleteGroup}
+              onCancel={cancelDeleteGroup}
+              confirmLabel="Yes, Delete"
+              cancelLabel="Cancel"
+            />
+          )}
+
+          {editingGroup && (
+            <CreateGroup
+              isEdit={true}
+              initialValues={{
+                name: editingGroup.name,
+                ...editingGroup
+              }}
+              onSubmit={(updatedData) => handleEditGroup(editingGroup.name, updatedData)}
+              onCancel={() => setEditingGroup(null)}
             />
           )}
         </div>

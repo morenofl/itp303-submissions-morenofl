@@ -2,29 +2,35 @@ import React, { useState, useContext } from 'react';
 import Navbar from '../components/Navbar';
 import Group from '../components/Group';
 import './Search.css';
-import  {CourseContext}  from '../components/CourseContext';
+import { CourseContext } from '../components/CourseContext';
 
 export default function Search() {
   const { coursesData } = useContext(CourseContext);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [groupList, setGroupList] = useState([]);
   const [loadingGroups, setLoadingGroups] = useState(false);
 
-  const courses = coursesData.map(course => ({
+  const unifiedCourses = coursesData.map(course => ({
     id: course.course_id,
     label: `${course.code} ${course.number} - ${course.title}`
   }));
 
-  
+  const filteredCourses = unifiedCourses.filter((cls) =>
+    cls.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleViewGroups = async (course) => {
     setSelectedCourse(course);
+    setGroupList([]);
     setLoadingGroups(true);
+
     try {
       const res = await fetch(`http://localhost:3000/api/groups/${course.id}`);
+      if (!res.ok) throw new Error("Failed to fetch groups");
       const data = await res.json();
-      setGroupList(data.groups || []);
+      setGroupList(data || []);
     } catch (err) {
       console.error("Error fetching groups:", err);
       setGroupList([]);
@@ -32,10 +38,6 @@ export default function Search() {
       setLoadingGroups(false);
     }
   };
-
-  const filteredCourses = courses.filter((cls) =>
-    cls.label.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <>
@@ -53,7 +55,7 @@ export default function Search() {
           />
 
           <div className="class-grid">
-            {filteredCourses.slice(0,10).map((course) => (
+            {filteredCourses.slice(0, 10).map((course) => (
               <div
                 key={course.id}
                 className={`class-card ${selectedCourse?.id === course.id ? "selected-card" : ""}`}
@@ -83,16 +85,12 @@ export default function Search() {
                       <Group
                         key={idx}
                         name={group.name}
-                        course={group.course}
-                        members={group.members}
-                        meetingTime={group.meetingTime}
-                        description={group.description}
-                        contact={group.contact || 'Not provided'}
+                        group={group}
                       />
                     ))
                   ) : (
-                    <div className='noGroupsMessage'>
-                      Create a group in the groups page!
+                    <div className="noGroupsMessage">
+                      No groups yet. Create one in the Groups page!
                     </div>
                   )}
                 </ul>

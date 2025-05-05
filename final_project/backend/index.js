@@ -38,11 +38,7 @@ app.use(cors({
 }));
 
 
-app.use((req, res, next) => {
-	res.setHeader('Access-Control-Allow-Credentials', 'true');
-	res.setHeader('Access-Control-Allow-Origin', 'https://uscwebdev.github.io'); // Your frontend URL
-	next();
-});
+
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

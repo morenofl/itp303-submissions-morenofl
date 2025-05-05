@@ -26,6 +26,11 @@ app.use(cors({
 	credentials: true
 }));
 
+app.use((req, res, next) => {
+	res.setHeader('Access-Control-Allow-Credentials', 'true');
+	res.setHeader('Access-Control-Allow-Origin', 'https://uscwebdev.github.io'); // Your frontend URL
+	next();
+  });
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -44,7 +49,7 @@ app.use(session({
 	cookie: {
 		httpOnly: true,
 		sameSite: 'none',
-		secure: true
+		secure: false
 	}
 }));
 
@@ -370,13 +375,14 @@ app.post('/api/login', async (req, res) => {
 		req.session.user_id = results.rows[0].user_id;
 		req.session.email = results.rows[0].email;
 
-		console.log('Session set:', req.session);
+		
 
 		req.session.save((err) => {
 			if (err) {
 				console.error("Session save error:", err);
 				return res.json({ error: "Server error" });
 			}
+			console.log("Session saved successfully", req.session);
 			return res.json({ message: "Success", user_id: results.rows[0].user_id });
 		});
 
@@ -425,10 +431,10 @@ app.post('/api/register', async (req, res) => {
 
 		const newUser = await pool.query(sql, values)
 
-		req.session.user = {
-			user_id: newUser.rows[0].user_id,
-			email: newUser.rows[0].email
-		};
+		
+		req.session.user_id = results.rows[0].user_id;
+		req.session.email = results.rows[0].email;
+
 
 		req.session.save((err) => {
 			if (err) {

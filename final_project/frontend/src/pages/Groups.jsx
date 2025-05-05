@@ -12,11 +12,8 @@ export default function GroupsPage() {
   const [showCreatePopup, setShowCreatePopup] = useState(false);
   const [groupToDelete, setGroupToDelete] = useState(null);
   const [editingGroup, setEditingGroup] = useState(null);
-
-  
   const [loading, setLoading] = useState(true);
 
- 
   useEffect(() => {
     const fetchUserGroups = async () => {
       try {
@@ -26,9 +23,7 @@ export default function GroupsPage() {
         });
         if (!res.ok) throw new Error('Failed to fetch user groups');
         const data = await res.json();
-        
         setUserGroups(data || []);
-        
       } catch (err) {
         console.error('Error fetching groups:', err);
       } finally {
@@ -54,8 +49,7 @@ export default function GroupsPage() {
         method: 'DELETE',
         credentials: 'include',
       });
-      setUserGroups(prev => prev.filter(group => group.group_id != groupToDelete));
-      
+      setUserGroups(prev => prev.filter(group => group.group_id !== groupToDelete));
     } catch (err) {
       console.error('Failed to delete group:', err);
     } finally {
@@ -70,7 +64,7 @@ export default function GroupsPage() {
         console.error("Original group not found.");
         return;
       }
-  
+
       const response = await fetch(`https://final-project-ro9j.onrender.com/api/groups/${groupToUpdate.group_id}`, {
         method: 'PUT',
         headers: {
@@ -79,15 +73,14 @@ export default function GroupsPage() {
         credentials: 'include',
         body: JSON.stringify(updatedGroup)
       });
-  
+
       const result = await response.json();
-  
+
       if (!response.ok) {
         console.error('Failed to update group:', result);
         return;
       }
-  
-      // Update frontend state only if backend update succeeds
+
       setUserGroups(prev =>
         prev.map(group =>
           group.group_id === groupToUpdate.group_id
@@ -100,7 +93,6 @@ export default function GroupsPage() {
       console.error('Error updating group:', err);
     }
   };
-  
 
   return (
     <>
@@ -111,32 +103,27 @@ export default function GroupsPage() {
 
           {isLoggedIn ? (
             <>
-              {loading ? (
-                <div className='groupPageMessage'>
-                  Loading your groups...
-                </div>
-                
-              ) : (
-                <ul className="group-list">
-                  {userGroups.length > 0 ? (
-                    userGroups.map((group, index) => (
-                      <Group
-                        key={group.group_id || index}
-                        name={group.name}
-                        group={group}
-                        onDeleteRequest={() => handleRequestDelete(group.group_id)}
-                        onEditSubmit={handleEditGroup}
-                        onEditRequest={(g) => setEditingGroup(g)} 
-                        showAdminButtons={user_id == group.created_by}
-                      />
-                    ))
-                  ) : (
-                    <div className="groupPageMessage">
-                      Use the Search Page to join study groups! Or create a group below!
-                    </div>
-                  )}
-                </ul>
-              )}
+              <ul className="group-list">
+                {loading ? (
+                  <div className="groupPageMessage">Loading your groups...</div>
+                ) : userGroups.length > 0 ? (
+                  userGroups.map((group, index) => (
+                    <Group
+                      key={group.group_id || index}
+                      name={group.name}
+                      group={group}
+                      onDeleteRequest={() => handleRequestDelete(group.group_id)}
+                      onEditSubmit={handleEditGroup}
+                      onEditRequest={(g) => setEditingGroup(g)}
+                      showAdminButtons={user_id === group.created_by}
+                    />
+                  ))
+                ) : (
+                  <div className="groupPageMessage">
+                    Use the Search Page to join study groups! Or create a group below!
+                  </div>
+                )}
+              </ul>
 
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <button className="pinkButton" onClick={handleCreateClick}>Create Group</button>

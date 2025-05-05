@@ -76,29 +76,24 @@ export default function Search() {
           {selectedCourse ? (
             <>
               <h2 className="groups-title">Groups for {selectedCourse.label}</h2>
-              {loadingGroups ? (
-                <div className="noGroupsMessage">
-                  Loading groups...
-                </div>
-                
-              ) : (
-                <ul className="group-list">
-                  {groupList.length > 0 ? (
-                    groupList.map((group, idx) => (
-                      <Group
-                        key={idx}
-                        name={group.name}
-                        group={group}
-                        onGroupChange={() => handleViewGroups(selectedCourse)}
-                      />
-                    ))
-                  ) : (
-                    <div className="noGroupsMessage">
-                      No groups yet. Create one in the Groups page!
-                    </div>
-                  )}
-                </ul>
-              )}
+              <ul className="group-list">
+                {loadingGroups ? (
+                  <div className="noGroupsMessage">Loading groups...</div>
+                ) : groupList.length > 0 ? (
+                  groupList.map((group, idx) => (
+                    <Group
+                      key={idx}
+                      name={group.name}
+                      group={group}
+                      onGroupChange={() => handleViewGroups(selectedCourse)}
+                    />
+                  ))
+                ) : (
+                  <div className="noGroupsMessage">
+                    No groups yet. Create one in the Groups page!
+                  </div>
+                )}
+              </ul>
             </>
           ) : (
             <h2 className="groups-title">Select a class to view groups</h2>

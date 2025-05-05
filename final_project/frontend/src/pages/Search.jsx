@@ -77,7 +77,10 @@ export default function Search() {
             <>
               <h2 className="groups-title">Groups for {selectedCourse.label}</h2>
               {loadingGroups ? (
-                <p>Loading groups...</p>
+                <div className="noGroupsMessage">
+                  Loading groups...
+                </div>
+                
               ) : (
                 <ul className="group-list">
                   {groupList.length > 0 ? (

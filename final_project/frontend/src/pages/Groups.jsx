@@ -112,7 +112,10 @@ export default function GroupsPage() {
           {isLoggedIn ? (
             <>
               {loading ? (
-                <p>Loading your groups...</p>
+                <div className='groupPageMessage'>
+                  Loading your groups...
+                </div>
+                
               ) : (
                 <ul className="group-list">
                   {userGroups.length > 0 ? (

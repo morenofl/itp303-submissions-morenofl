@@ -20,17 +20,29 @@ const pool = new pg.Pool({
 
 const pgSession = connectPgSimple(session);
 
+const allowedOrigins = [
+	'https://uscwebdev.github.io',
+	'https://final-project-frontend-uubc.onrender.com'
+];
+
 
 app.use(cors({
-	origin: 'https://uscwebdev.github.io', // allow your frontend
+	origin: (origin, callback) => {
+		if (!origin || allowedOrigins.includes(origin)) {
+			callback(null, true);
+		} else {
+			callback(new Error('Not allowed by CORS'));
+		}
+	},
 	credentials: true
 }));
+
 
 app.use((req, res, next) => {
 	res.setHeader('Access-Control-Allow-Credentials', 'true');
 	res.setHeader('Access-Control-Allow-Origin', 'https://uscwebdev.github.io'); // Your frontend URL
 	next();
-  });
+});
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -375,7 +387,7 @@ app.post('/api/login', async (req, res) => {
 		req.session.user_id = results.rows[0].user_id;
 		req.session.email = results.rows[0].email;
 
-		
+
 
 		req.session.save((err) => {
 			if (err) {
@@ -431,7 +443,7 @@ app.post('/api/register', async (req, res) => {
 
 		const newUser = await pool.query(sql, values)
 
-		
+
 		req.session.user_id = results.rows[0].user_id;
 		req.session.email = results.rows[0].email;
 

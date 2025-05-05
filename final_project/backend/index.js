@@ -20,10 +20,10 @@ const pool = new pg.Pool({
 
 const pgSession = connectPgSimple(session);
 
-app.set('trust proxy', 1); // Trust the first proxy (Cloudflare)
+app.set('trust proxy', 1); 
 
 app.use(cors({
-	origin: 'https://uscwebdev.github.io', // allow your frontend
+	origin: 'https://uscwebdev.github.io',
 	credentials: true
 }));
 
@@ -177,7 +177,7 @@ app.post('/api/userGroups', async (req, res) => {
 app.delete('/api/userGroups/:group_id', async (req, res) => {
 	try {
 		const group_id = req.params.group_id;
-		if (!req.session.user?.user_id) {
+		if (!req.session.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
 

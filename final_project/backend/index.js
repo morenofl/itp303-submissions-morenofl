@@ -140,7 +140,7 @@ app.post('/api/groups', async (req, res) => {
 app.post('/api/userGroups', async (req, res) => {
 
 	try {
-		if (!req.session.user?.user_id) {
+		if (!req.session.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
 		console.log(req.session.user_id);

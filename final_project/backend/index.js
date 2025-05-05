@@ -92,7 +92,7 @@ app.post('/api/groups', async (req, res) => {
 
 		} = req.body;
 
-		if (!req.session..user_id) {
+		if (!req.session.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
 

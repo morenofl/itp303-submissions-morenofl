@@ -21,10 +21,12 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false); // NEW
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage('');
+    setIsSubmitting(true); // disable buttons
 
     try {
       const res = await fetch('https://final-project-ro9j.onrender.com/api/login', {
@@ -41,8 +43,7 @@ export default function Login() {
       if (res.ok && data.message === 'Success') {
         setIsLoggedIn(true);
         setEmail(localEmail);
-        
-        setUserId(data.user_id || ''); // depends on your backend response
+        setUserId(data.user_id || '');
         navigate('/');
       } else {
         setErrorMessage(data.error || 'Login failed');
@@ -50,25 +51,26 @@ export default function Login() {
     } catch (err) {
       console.error('Login error:', err);
       setErrorMessage('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false); // enable buttons
     }
   };
 
   const handleCreateAccount = async (e) => {
     e.preventDefault();
     setErrorMessage('');
+    setIsSubmitting(true); // disable buttons
 
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match.");
+      setIsSubmitting(false);
       return;
     }
 
     try {
       const res = await fetch('https://final-project-ro9j.onrender.com/api/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ email: localEmail, password })
       });
@@ -87,76 +89,81 @@ export default function Login() {
     } catch (err) {
       console.error('Registration failed:', err);
       setErrorMessage('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false); // enable buttons
     }
   };
 
   return (
-    <>
-      <div className="login-page">
-        <div className="login-card">
-          <h2 className="login-title">{isLogin ? "Login" : "Create Account"}</h2>
+    <div className="login-page">
+      <div className="login-card">
+        <h2 className="login-title">{isLogin ? "Login" : "Create Account"}</h2>
 
-          <form className="login-form" onSubmit={isLogin ? handleLogin : handleCreateAccount} method="POST">
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={localEmail}
-                onChange={(e) => setLocalEmail(e.target.value)}
-                required
-              />
-            </div>
+        <form className="login-form" onSubmit={isLogin ? handleLogin : handleCreateAccount} method="POST">
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={localEmail}
+              onChange={(e) => setLocalEmail(e.target.value)}
+              required
+            />
+          </div>
 
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {!isLogin && (
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="confirmPassword">Confirm Password</label>
               <input
                 type="password"
-                id="password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
             </div>
+          )}
 
-            {!isLogin && (
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
-            )}
-
-            {errorMessage && (
-              <div className="error-message">
-                {errorMessage}
-              </div>
-            )}
-
-            <button type="submit" className="btn login-button">
-              {isLogin ? "Login" : "Create Account"}
-            </button>
-          </form>
+          {errorMessage && (
+            <div className="error-message">
+              {errorMessage}
+            </div>
+          )}
 
           <button
-            className="login-button btn create-account-button"
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setErrorMessage('');
-            }}
+            type="submit"
+            className="btn login-button"
+            disabled={isSubmitting}
           >
-            {isLogin ? "Create New Account" : "Already Have an Account? Login"}
+            {isSubmitting ? 'Please wait...' : isLogin ? "Login" : "Create Account"}
           </button>
-        </div>
+        </form>
+
+        <button
+          className="login-button btn create-account-button"
+          onClick={() => {
+            setIsLogin(!isLogin);
+            setErrorMessage('');
+          }}
+          disabled={isSubmitting}
+        >
+          {isLogin ? "Create New Account" : "Already Have an Account? Login"}
+        </button>
       </div>
-    </>
+    </div>
   );
 }

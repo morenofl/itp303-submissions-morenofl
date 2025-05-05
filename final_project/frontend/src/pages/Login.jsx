@@ -44,7 +44,9 @@ export default function Login() {
         setIsLoggedIn(true);
         setEmail(localEmail);
         setUserId(data.user_id || '');
-        navigate('/');
+        setTimeout(() => {
+          navigate('/');
+        }, 100);
       } else {
         setErrorMessage(data.error || 'Login failed');
       }
@@ -85,7 +87,9 @@ export default function Login() {
       setIsLoggedIn(true);
       setEmail(localEmail);
       setUserId(data.user_id || '');
-      navigate('/');
+      setTimeout(() => {
+        navigate('/');
+      }, 100);
     } catch (err) {
       console.error('Registration failed:', err);
       setErrorMessage('Something went wrong. Please try again.');

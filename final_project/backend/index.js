@@ -261,11 +261,12 @@ app.get('/api/userGroups', async (req, res) => {
 	try {
 		console.log('Incoming session:', req.session);
 
-		if (!req.session.user?.user_id) {
+		if (!req.session.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
 
-		const userId = req.session.user.user_id;
+		const userId = req.session.user_id;
+
 
 
 		const user_groups = await pool.query(`
@@ -366,10 +367,9 @@ app.post('/api/login', async (req, res) => {
 		}
 
 
-		req.session.user = {
-			user_id: results.rows[0].user_id,
-			email: results.rows[0].email
-		};
+		req.session.user_id = results.rows[0].user_id;
+		req.session.email = results.rows[0].email;
+
 		console.log('Session set:', req.session);
 
 		req.session.save((err) => {
@@ -377,10 +377,7 @@ app.post('/api/login', async (req, res) => {
 				console.error("Session save error:", err);
 				return res.json({ error: "Server error" });
 			}
-			return res.json({
-				message: "Success",
-				user_id: results.rows[0].user_id
-			});
+			return res.json({ message: "Success", user_id: results.rows[0].user_id });
 		});
 
 

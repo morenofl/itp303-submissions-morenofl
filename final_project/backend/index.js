@@ -20,6 +20,7 @@ const pool = new pg.Pool({
 
 const pgSession = connectPgSimple(session);
 
+app.set('trust proxy', 1); // Trust the first proxy (Cloudflare)
 
 app.use(cors({
 	origin: 'https://uscwebdev.github.io', // allow your frontend
@@ -34,7 +35,6 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 
 
 app.use(session({

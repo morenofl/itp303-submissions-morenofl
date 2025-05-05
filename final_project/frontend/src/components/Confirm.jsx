@@ -1,4 +1,3 @@
-// components/ConfirmationPopup.js
 import React from 'react';
 import './Confirm.css';
 

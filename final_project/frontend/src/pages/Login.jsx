@@ -21,12 +21,12 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false); // NEW
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage('');
-    setIsSubmitting(true); // disable buttons
+    setIsSubmitting(true);
 
     try {
       const res = await fetch('https://final-project-ro9j.onrender.com/api/login', {
@@ -54,14 +54,14 @@ export default function Login() {
       console.error('Login error:', err);
       setErrorMessage('Something went wrong. Please try again.');
     } finally {
-      setIsSubmitting(false); // enable buttons
+      setIsSubmitting(false);
     }
   };
 
   const handleCreateAccount = async (e) => {
     e.preventDefault();
     setErrorMessage('');
-    setIsSubmitting(true); // disable buttons
+    setIsSubmitting(true);
 
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match.");
@@ -94,7 +94,7 @@ export default function Login() {
       console.error('Registration failed:', err);
       setErrorMessage('Something went wrong. Please try again.');
     } finally {
-      setIsSubmitting(false); // enable buttons
+      setIsSubmitting(false); 
     }
   };
 

@@ -122,7 +122,7 @@ export default function CreateGroupForm({
 			}
 	
 			if (onSubmit) {
-				onSubmit(data.group || groupPayload); // Pass updated data back
+				onSubmit(data.group || groupPayload); 
 			}
 		} catch (err) {
 			console.error(isEdit ? 'Error updating group:' : 'Error creating group:', err);

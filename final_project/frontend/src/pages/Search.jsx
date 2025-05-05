@@ -86,6 +86,7 @@ export default function Search() {
                         key={idx}
                         name={group.name}
                         group={group}
+                        onGroupChange={() => handleViewGroups(selectedCourse)}
                       />
                     ))
                   ) : (

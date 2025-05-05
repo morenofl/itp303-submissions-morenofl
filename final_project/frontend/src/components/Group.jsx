@@ -16,7 +16,8 @@ export default function Group({
   onDeleteRequest,
   onEditSubmit,
   onEditRequest,
-  showAdminButtons
+  showAdminButtons,
+  onGroupChange 
 }) {
   const { coursesData } = useContext(CourseContext);
   const { isLoggedIn, userGroups, setUserGroups, email: currentUserEmail } = useContext(UserContext);
@@ -24,7 +25,6 @@ export default function Group({
   const [showConfirmLeave, setShowConfirmLeave] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showJoinSuccess, setShowJoinSuccess] = useState(false);
-  
   const [isInGroup, setIsInGroup] = useState(false);
 
   const unifiedCourses = coursesData.map(course => ({
@@ -41,7 +41,6 @@ export default function Group({
   const groupContact = contact || group.contact;
   const groupCreator = group.created_by;
 
-  
   useEffect(() => {
     setIsInGroup(userGroups.some(g => g.group_id === group.group_id));
   }, [userGroups, group.group_id]);
@@ -69,6 +68,7 @@ export default function Group({
 
       setUserGroups(prev => [...prev, group]);
       setShowJoinSuccess(true);
+      onGroupChange?.(); 
     } catch (err) {
       console.error("Error joining group:", err);
     }
@@ -91,9 +91,11 @@ export default function Group({
         console.error("Leave failed:", data);
         return;
       }
+
       setIsInGroup(false);
       setUserGroups(prev => prev.filter(g => g.group_id !== group.group_id));
       setShowConfirmLeave(false);
+      onGroupChange?.();
     } catch (err) {
       console.error("Error leaving group:", err);
     }
@@ -156,8 +158,6 @@ export default function Group({
           confirmLabel="OK"
         />
       )}
-
-      
     </li>
   );
 }

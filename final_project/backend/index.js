@@ -92,11 +92,11 @@ app.post('/api/groups', async (req, res) => {
 
 		} = req.body;
 
-		if (!req.session.user || !req.session.user.user_id) {
+		if (!req.session..user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
 
-		const creatorId = req.session.user.user_id
+		const creatorId = req.session.user_id
 
 		const values = [
 			name,
@@ -143,8 +143,8 @@ app.post('/api/userGroups', async (req, res) => {
 		if (!req.session.user?.user_id) {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
-		console.log(req.session.user.user_id);
-		const userId = req.session.user.user_id;
+		console.log(req.session.user_id);
+		const userId = req.session.user_id;
 
 		const { group_id } = req.body;
 
@@ -181,7 +181,7 @@ app.delete('/api/userGroups/:group_id', async (req, res) => {
 			return res.status(401).json({ error: 'Not logged in' });
 		}
 
-		const userId = req.session.user.user_id;
+		const userId = req.session.user_id;
 
 		await pool.query(`
 			DELETE FROM studymatch_db.user_study_groups

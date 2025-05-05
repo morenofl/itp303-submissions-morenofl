@@ -42,8 +42,12 @@ export default function Group({
   const groupCreator = group.created_by;
 
   useEffect(() => {
-    setIsInGroup(userGroups.some(g => g.group_id === group.group_id));
-  }, [userGroups, group.group_id]);
+    if (isLoggedIn) {
+      setIsInGroup(userGroups.some(g => g.group_id === group.group_id));
+    } else {
+      setIsInGroup(false);
+    }
+  }, [isLoggedIn, userGroups, group.group_id]);
 
   const handleJoin = async () => {
     if (!isLoggedIn) {

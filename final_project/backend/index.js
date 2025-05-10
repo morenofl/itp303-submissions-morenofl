@@ -384,7 +384,7 @@ app.post('/api/login', async (req, res) => {
 				return res.json({ error: "Server error" });
 			}
 			console.log("Session saved successfully", req.session);
-			return res.json({ message: "Success", user_id: results.rows[0].user_id });
+			return res.json({ message: "Success", user_id: results.rows[0].user_id, email: results.rows[0].email});
 		});
 
 
@@ -444,7 +444,8 @@ app.post('/api/register', async (req, res) => {
 			}
 			return res.json({
 				message: "Success",
-				user_id: newUser.rows[0].user_id
+				user_id: newUser.rows[0].user_id,
+				email: newUser.rows[0].email
 			});
 		});
 
@@ -464,7 +465,7 @@ app.get('/api/protected', (req, res) => {
 	  return res.status(401).json({ error: 'Not authenticated' });
 	}
   
-	return res.json({ message: 'You are logged in', user: req.session });
+	return res.json({ message: 'You are logged in', user_id: req.session.user_id, email: req.session.user_id });
   });
   
 app.get('/api/logout', (req, res) => {

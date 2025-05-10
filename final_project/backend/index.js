@@ -432,8 +432,8 @@ app.post('/api/register', async (req, res) => {
 		const newUser = await pool.query(sql, values)
 
 		
-		req.session.user_id = results.rows[0].user_id;
-		req.session.email = results.rows[0].email;
+		req.session.user_id = newUser.rows[0].user_id;
+		req.session.email = newUser.rows[0].email;
 
 
 		req.session.save((err) => {
@@ -450,7 +450,7 @@ app.post('/api/register', async (req, res) => {
 
 	} catch (error) {
 		console.log(error);
-		res.send('Server Error');
+		res.json({message: "Server Error"});
 	}
 
 

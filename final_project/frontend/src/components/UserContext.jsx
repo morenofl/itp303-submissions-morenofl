@@ -8,7 +8,7 @@ export function UserProvider({ children }) {
   const [email, setEmail] = useState('');
   const [user_id, setUserId] = useState('');
 
-   // Check if the user is logged in when the app is loaded
+   
    useEffect(() => {
     const checkSession = async () => {
       try {

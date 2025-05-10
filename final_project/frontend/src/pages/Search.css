@@ -96,7 +96,6 @@
 	font-size: 1.05rem;
 }
 
-/* Responsive adjustment for smaller screens */
 @media (max-width: 600px) {
 	.view-groups-button {
 		width: 100%;
@@ -124,7 +123,7 @@
 	color: #333;
 }
 
-/* Scrollbar for left and right columns */
+
 .left-column::-webkit-scrollbar,
 .right-column::-webkit-scrollbar {
 	width: 10px;
@@ -133,7 +132,7 @@
 .left-column::-webkit-scrollbar-track,
 .right-column::-webkit-scrollbar-track {
 	background: #f5f5dc;
-	/* match background */
+	
 	border-radius: 8px;
 }
 

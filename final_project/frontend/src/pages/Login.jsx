@@ -113,7 +113,7 @@ export default function Login() {
               value={localEmail}
               onChange={(e) => setLocalEmail(e.target.value)}
               required
-              disabled={isSubmitting} // Disable the input when submitting
+              disabled={isSubmitting} 
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={isSubmitting} // Disable the input when submitting
+              disabled={isSubmitting} 
             />
           </div>
 
@@ -140,7 +140,7 @@ export default function Login() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                disabled={isSubmitting} // Disable the input when submitting
+                disabled={isSubmitting} 
               />
             </div>
           )}

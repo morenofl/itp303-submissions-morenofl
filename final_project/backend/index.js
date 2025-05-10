@@ -56,6 +56,7 @@ app.use(session({
 
 
 
+
 // Get all Departments
 app.get('/api/departments', async (req, res) => {
 	try {
@@ -457,6 +458,15 @@ app.post('/api/register', async (req, res) => {
 
 });
 
+
+app.get('/api/protected', (req, res) => {
+	if (!req.session.user_id) {
+	  return res.status(401).json({ error: 'Not authenticated' });
+	}
+  
+	return res.json({ message: 'You are logged in', user: req.session });
+  });
+  
 app.get('/api/logout', (req, res) => {
 
 	req.session.destroy(() => {

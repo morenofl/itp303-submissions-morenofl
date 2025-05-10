@@ -20,8 +20,9 @@ export function UserProvider({ children }) {
         if (response.ok) {
           const data = await response.json();
           setIsLoggedIn(true);
-          setEmail(data.email);
           setUserId(data.user_id);
+          setEmail(data.email);
+          
           
         } else {
           setIsLoggedIn(false);

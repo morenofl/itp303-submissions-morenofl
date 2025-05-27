@@ -7,7 +7,7 @@
 **/.DS_Store
 **/.AppleDouble
 **/.LSOverride
-
+**/passwords.txt
 ### Windows ###
 # Windows thumbnail cache files
 **/Thumbs.db

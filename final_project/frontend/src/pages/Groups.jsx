@@ -17,7 +17,7 @@ export default function GroupsPage() {
   useEffect(() => {
     const fetchUserGroups = async () => {
       try {
-        const res = await fetch(`https://final-project-ro9j.onrender.com/api/userGroups`, {
+        const res = await fetch(`https://studymatch.onrender.com/api/userGroups`, {
           method: 'GET',
           credentials: 'include'
         });
@@ -45,7 +45,7 @@ export default function GroupsPage() {
   const confirmDeleteGroup = async () => {
     if (!groupToDelete) return;
     try {
-      await fetch(`https://final-project-ro9j.onrender.com/api/groups/${groupToDelete}`, {
+      await fetch(`https://studymatch.onrender.com/api/groups/${groupToDelete}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -65,7 +65,7 @@ export default function GroupsPage() {
         return;
       }
 
-      const response = await fetch(`https://final-project-ro9j.onrender.com/api/groups/${groupToUpdate.group_id}`, {
+      const response = await fetch(`https://studymatch.onrender.com/api/groups/${groupToUpdate.group_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

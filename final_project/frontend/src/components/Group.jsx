@@ -56,7 +56,7 @@ export default function Group({
     }
 
     try {
-      const res = await fetch(`https://final-project-ro9j.onrender.com/api/userGroups`, {
+      const res = await fetch(`https://studymatch.onrender.com/api/userGroups`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -84,7 +84,7 @@ export default function Group({
 
   const confirmLeave = async () => {
     try {
-      const res = await fetch(`https://final-project-ro9j.onrender.com/api/userGroups/${group.group_id}`, {
+      const res = await fetch(`https://studymatch.onrender.com/api/userGroups/${group.group_id}`, {
         method: 'DELETE',
         credentials: 'include'
       });

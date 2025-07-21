@@ -29,7 +29,7 @@ export default function Login() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch('https://final-project-ro9j.onrender.com/api/login', {
+      const res = await fetch('https://studymatch.onrender.com/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ export default function Login() {
     }
 
     try {
-      const res = await fetch('https://final-project-ro9j.onrender.com/api/register', {
+      const res = await fetch('https://studymatch.onrender.com/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

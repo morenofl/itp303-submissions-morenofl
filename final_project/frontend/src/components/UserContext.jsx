@@ -12,7 +12,7 @@ export function UserProvider({ children }) {
    useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await fetch('https://final-project-ro9j.onrender.com/api/protected', {
+        const response = await fetch('https://studymatch.onrender.com/api/protected', {
           method: 'GET',
           credentials: 'include', 
         });

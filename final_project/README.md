@@ -1,4 +1,4 @@
-# StudyMatch - ITP 303 Final Project
+# StudyMatch
 
 A full-stack web application for students to find, create, and join study groups for their courses. Built with React (frontend), Express/Node.js (backend), and PostgreSQL (database).
 

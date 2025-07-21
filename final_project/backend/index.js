@@ -23,13 +23,13 @@ const pgSession = connectPgSimple(session);
 app.set('trust proxy', 1); 
 
 app.use(cors({
-	origin: 'https://uscwebdev.github.io',
+	origin: 'https://morenofl.github.io',
 	credentials: true
 }));
 
 app.use((req, res, next) => {
 	res.setHeader('Access-Control-Allow-Credentials', 'true');
-	res.setHeader('Access-Control-Allow-Origin', 'https://uscwebdev.github.io'); // Your frontend URL
+	res.setHeader('Access-Control-Allow-Origin', 'https://morenofl.github.io'); // Your frontend URL
 	next();
   });
 

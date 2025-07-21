@@ -31,7 +31,7 @@ final_project/
 ## Live Demo
 This project is already deployed! You can try it here:
 
-**Frontend:** [https://morenofl.github.io/itp303-submissions-morenofl/final_project/frontend/dist/index.html](https://morenofl.github.io/itp303-submissions-morenofl/final_project)
+**Frontend:** [https://morenofl.github.io/itp303-submissions-morenofl/final_project](https://morenofl.github.io/itp303-submissions-morenofl/final_project/frontend/dist/index.html)
 
 **Backend/API:** Hosted on Render.com
 
